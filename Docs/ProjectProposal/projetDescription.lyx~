@@ -1,0 +1,653 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Complex Systems Made Simple
+\begin_inset Newline newline
+\end_inset
+
+Project description
+\end_layout
+
+\begin_layout Author
+Juste Raimbault
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset space \hfill{}
+\end_inset
+
+
+\shape italic
+\size large
+Generative coupled model for urban configuration optimisation
+\shape default
+\size default
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Abstract
+We describe briefly the context and the proposal for a project which aims
+ to extend and apply to concrete cases a generative Cellular Automata model.
+ The original model will be coupled with an agent-based model (we have to
+ find out if the coupling will be simple or complex) in order to add some
+ properties that cannot be translated into the CA model.
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+General context
+\end_layout
+
+\begin_layout Standard
+Cellular Automata (CA) models have been extendly studied and used in quantitativ
+e geography and in a more indirect way in Urban Planning and Design.
+ 
+\noun on
+Batty
+\noun default
+ sums up in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Bat07"
+
+\end_inset
+
+ the basis of toy models based on CA to explore self-organized patterns
+ typical of urban systems.
+ A review of existing applications of CA models in geography is done by
+ 
+\noun on
+Iltanen
+\noun default
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "iltanen2012cellular"
+
+\end_inset
+
+ in the frame of a general review of recent methods and practices linked
+ to agent-based modeling in the field (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "heppenstall2012agent"
+
+\end_inset
+
+).
+ Direct applications are Urban sprawl simulations, but other concrete example
+ can be general models for landuse simulation (e.
+ g.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "white1993cellular"
+
+\end_inset
+
+) or also more precise applications as in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Wu96alinguistic"
+
+\end_inset
+
+ for sustainable development.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "MBB09"
+
+\end_inset
+
+, 
+\noun on
+Moreno
+\noun default
+ & al.
+ propose to couple a cellular automata with a dynamic euclidian network
+ in order to test the influence of distances and proximity in the sprawl
+ phenomena.
+ The model was based on a previous work (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "moreno2007conception"
+
+\end_inset
+
+) which aim was morphological reproduction and analysis of urban structures.
+ Considering the development of the transportation network in common with
+ the development of urban patterns showed to reproduce in a better way typical
+ patterns.
+ Furthermore, it allowed to include properties of the urban system such
+ as transportation time within the network.
+ We work in that frame in the following.
+\end_layout
+
+\begin_layout Section
+Project description
+\end_layout
+
+\begin_layout Subsection
+Previous work
+\end_layout
+
+\begin_layout Standard
+In a previous work (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Raimbault032012"
+
+\end_inset
+
+), we generalized the formal description of the model proposed in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "MBB09"
+
+\end_inset
+
+.
+ The model works roughly as follows.
+\end_layout
+
+\begin_layout Standard
+The world is composed of a cellular automaton in which an euclidian network
+ is embedded.
+ A cell can be constructed or not.
+\end_layout
+
+\begin_layout Standard
+The automaton and the network evolve as follows:
+\end_layout
+
+\begin_layout Itemize
+at each time step, 
+\begin_inset Formula $N$
+\end_inset
+
+ new cells of the automaton have to be constructed
+\end_layout
+
+\begin_layout Itemize
+therefore, a score (depending on the state of the world) for each cell is
+ calculated, depending on some variables that we can choose and for which
+ we can tune the influence on the score through prameters (for example,
+ distance to the town center which is a fixed node of the network, or distance
+ to the nearest road, i.
+ e.
+ to the network, or density in a Moore neighborhood, what creates a direct
+ feedback), and the best 
+\begin_inset Formula $N$
+\end_inset
+
+ cells for this score are constructed.
+\end_layout
+
+\begin_layout Itemize
+New roads are constructed: if a new constructed cell is over a fixed distance,
+ it is connected to the network following an heuristic (generally connected
+ to the orthogonal projection on the nearest road).
+\end_layout
+
+\begin_layout Standard
+In that project, sensitivity analysis, exploration of the parameter space
+ and possible calibration were only overflown.
+ Furthermore, we would like to rethink completely the model and the possible
+ applications.
+\end_layout
+
+\begin_layout Subsection
+Aims of the extension and generalisation
+\end_layout
+
+\begin_layout Standard
+The aim of this project will thereby be to rethink, extend and make the
+ model more robust.
+ We will try to correct the imprecisions, give more sense to parameters
+ (too much abstract parameters makes the model less coherent) and extend
+ it by coupling.
+ We will explore in a more rigourous way the parameter space of the new
+ model, using possibly evolutionnary algorithms (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "alba1999survey"
+
+\end_inset
+
+, we may however not be able to parallelize because of technical means)
+ if an quasi-exhaustive heuristic exploration is not possible.
+ The final aim is to apply the model to the concrete case of the optimisation
+ of the configuration of a new district (for the real parameters that the
+ model will translate).
+\end_layout
+
+\begin_layout Section
+Important points
+\end_layout
+
+\begin_layout Subsection
+Epistemological framework
+\end_layout
+
+\begin_layout Standard
+Reviewing in the current state of art in the Complexity Theories of Cities,
+ 
+\noun on
+Portugali
+\noun default
+ argues in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "portugali2012complexity"
+
+\end_inset
+
+ that a misunderstanding on the role of quantitative simulation models in
+ urban system modeling has lead to a loss of sense in the application of
+ these models.
+ It appears that our work could easily fall in that trap, because of the
+ application of abstract generative model to real cases.
+ We will beware to have a coherent correspondance between the abstract model
+ and the real world, and if not we will stay careful in the statement of
+ the results.
+\end_layout
+
+\begin_layout Subsection
+Coherent evaluation functions
+\end_layout
+
+\begin_layout Standard
+We need to find more realistic functions for evaluation of performances
+ of the generated urban structures.
+\end_layout
+
+\begin_layout Paragraph
+Morphological analysis
+\end_layout
+
+\begin_layout Standard
+A fine morphological classification of the generated structure is needed
+ in order to better understand the model.
+ However, direct calculation on a configuration has no real sense since
+ indicators such as Moran index (defined for example in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "tsai2005quantifying"
+
+\end_inset
+
+) can be very sensitive to local perturbation that have in fact no strong
+ impact in the general urban form, and the extraction of the morphological
+ enveloppe of the urban structure appears to be a good solution that we
+ will implement at is proposed in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "tannier:halshs-00461657,frankhauser2005multi"
+
+\end_inset
+
+.
+ Using that, better descriptor of urban morphology than simple density (e.
+ g.
+ Moran Index mentioned before) will be used to evaluate one output of the
+ model.
+\end_layout
+
+\begin_layout Paragraph
+Network properties
+\end_layout
+
+\begin_layout Standard
+The evaluation of the network properties stayed abstract and static.
+ We would like to use actual distribution of inhabitants that will result
+ from the ABM (see next paragraph) to compute more realistic index of robustness
+ (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "RePEc:eee:transa:v:44:y:2010:i:5:p:323-336"
+
+\end_inset
+
+) or of performance (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "banos2012towards"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Paragraph
+Other indicators
+\end_layout
+
+\begin_layout Standard
+New indicators as economic ones will come from the extension that is described
+ just after (e.
+ g.
+ spatial distribution of wealth, segregation, etc.
+ )
+\end_layout
+
+\begin_layout Subsection
+Economic properties of the form: coupling with an ABM
+\end_layout
+
+\begin_layout Standard
+The core part of our work will be the coupling with an agent-based model
+ in order to model economic evolution of the generated urban form.
+ That means adding function to the form, what is one crucial question in
+ urban system modeling.
+\end_layout
+
+\begin_layout Standard
+The idea come from 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "DBM11"
+
+\end_inset
+
+ where a micro-economic model of urban sprawl is developped.
+ That way, we will add mobile agents that will represent households or companies
+ that want to invest the new built cells.
+ That would also mean that cells are dwellings or workplaces.
+ The population can come progressively, what is quite adapted to the type
+ of application we want to proceed to (see e.
+ g.
+ the application in the previous work, that was the optimization of the
+ configuration of a new district).
+ We will use relations between agents close to the model described by Benenson
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "benenson1998multi"
+
+\end_inset
+
+ (simulation of residential dynamics), with an emphasis on immigrants regarding
+ internal move (different time scale could be use to do that).
+\end_layout
+
+\begin_layout Standard
+In the following, propositions are not formal but more to give an idea on
+ the type of feedbacks in the ABM.
+\end_layout
+
+\begin_layout Standard
+The question of the type of coupling will be crucial:
+\end_layout
+
+\begin_layout Itemize
+a simple coupling would consist in a 
+\begin_inset Quotes eld
+\end_inset
+
+serial
+\begin_inset Quotes erd
+\end_inset
+
+ process: structure is generated through CA-network model, then the ABM
+ takes the configuration as inputs and make the people choose their places,
+ with evolution of rents.
+ Rents are a function of the wealth of people, and feedback is done through
+ correspondance wealth/rent.
+ (beware that too simple relations would give the Schelling segregation
+ model (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "schelling1969models"
+
+\end_inset
+
+), we may not want to have caricatural effects).
+ People can move if their wealth change or they find a rent that suits them
+ better.
+\end_layout
+
+\begin_layout Itemize
+complex coupling will be a 
+\begin_inset Quotes eld
+\end_inset
+
+parallel
+\begin_inset Quotes erd
+\end_inset
+
+ process: new people come at each time step of the development of the CA,
+ they wealth has an influence on rents, rents have an influence on new construct
+ions, which have a feedback on the choice of the new place by people and
+ on the possible moves within former arrivants.
+\end_layout
+
+\begin_layout Standard
+Note that the distinction 
+\begin_inset Quotes eld
+\end_inset
+
+simple/complex
+\begin_inset Quotes erd
+\end_inset
+
+ relies on the underlying complexity of the global model: a simple coupling
+ of two complex models of complex systems leads to 
+\begin_inset Quotes eld
+\end_inset
+
+predictive
+\begin_inset Quotes erd
+\end_inset
+
+ behaviors, in the sense that the knowledge of the beahvior the two models
+ will able us to predict the beahvior of the simple coupling, whereas the
+ complex coupling will be an impredictible complex model of a complex system
+ (see 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "varenne2013modeliser"
+
+\end_inset
+
+ for a formalisation of the notion of complexity between models and systems).
+\end_layout
+
+\begin_layout Subsection
+Sensitivity analysis and exploration of the parameter space
+\end_layout
+
+\begin_layout Standard
+After having generalised our model with the constraint of the minimization
+ of abstract parameters (
+\begin_inset Quotes eld
+\end_inset
+
+real
+\begin_inset Quotes erd
+\end_inset
+
+ parameters that can be inputed from real data, estimations or proxy will
+ be fixed), we will proceed to sensitivity analysis of the model to different
+ parameters, but also to initial situation.
+ We will try to see if implementation bias has a non-neglectible influence
+ on the behavior of the model.
+ We will proceed to an exploration of the parameter space as explained before.
+ The appropriated output functions will be used to describe the beahvior
+ of the model in the parameter space.
+\end_layout
+
+\begin_layout Subsection
+Application of the model
+\end_layout
+
+\begin_layout Standard
+Last point will be the focus on the application on a real case.
+ We may consider the same example or a similar one as in previous work,
+ indeed that type of situation suits well the conceptual frame of the model
+ as we claimed before.
+ Depending on the time we have, we may collect finer GIS Data for spatial
+ configuration and IRIS data for possible population configuration.
+ The application should be quite the same, i.
+ e.
+ the optimization of the configuration of a new district in regard to some
+ real parameters that have a translation in the model.
+\end_layout
+
+\begin_layout Section
+Objectives and schedule
+\end_layout
+
+\begin_layout Standard
+Considering the amount of work already put in the previous work on the subject,
+ i.
+ e.
+ that for example the heavy code parts are already written, so we can have
+ more time on theoretical considerations, exploration and application of
+ the model, our aim is to obtain at the end of the project a publishable
+ paper.
+\end_layout
+
+\begin_layout Standard
+The detailed scheduled is the following:
+\end_layout
+
+\begin_layout Itemize
+Review of old work, review of litterature: already done
+\end_layout
+
+\begin_layout Itemize
+Theoretical extension and revision: 2 weeks (due 27/10)
+\end_layout
+
+\begin_layout Itemize
+Implementation: 1 week (due 03/11) – should be quick because core part is
+ already implemented and utility functions also 
+\end_layout
+
+\begin_layout Itemize
+Exploration, results, collect of data, discussion: 2,5 weeks (due 21/11)
+ 
+\end_layout
+
+\begin_layout Itemize
+Redaction of the paper: 1 week (due 27/11 – begun in previous step) 
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/Juste/Documents/ComplexSystems/Biblio/BibTeX/global,/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Biblio/projetCSMS"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

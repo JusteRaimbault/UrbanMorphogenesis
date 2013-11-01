@@ -1,0 +1,23 @@
+;;agentset/list functions
+
+to-report to-list [agentset]
+  let res []
+  ask agentset [
+    set res lput self res 
+  ]
+  report res
+end
+
+
+
+
+;; normalised norm-p of a vector
+;; in this file because applies on a list
+;;"efficient" implementation, just one go through the list (is it really useful?)
+
+to-report norm-p [p l]
+  let res 0
+  let n length l
+  foreach l [set res res + (? ^ p)]
+  report (res / n) ^ (1 / p)
+end

@@ -1,0 +1,62 @@
+
+
+
+
+
+to compare-activities-configurations
+  
+  let filename word (word "atlantis_" timer) ".sci"
+  file-open filename
+  file-print "d=[];speed=[];config=[];a=[];"
+  file-close
+
+  let ii 1
+
+  set config-from-file? true
+  set config-comparison? true
+
+  foreach generate-configs-list [
+      
+      setup
+      
+      let n 0
+      let conf 0
+      foreach ? [ask centres with [number = n] [set activity ? set color activity-color activity] set n n + 1 set conf (10 * conf) + ?]
+      
+      ;ask centres [show word "number" number show word "activity" activity]
+      
+      
+      ;;generate urban shape
+      while [ ticks < ticks-number ][
+        go
+      ]
+      
+      update-vars
+      
+      ;;export values in file
+      file-open filename
+      file-print word (word (word (word "d(" ii) ")=") eval-density ) ";"
+      file-print word (word (word (word "speed(" ii) ")=") eval-speed ) ";"
+      file-print word (word (word (word "a(" ii) ")=") eval-activities ) ";"
+      file-print word (word (word (word "conf(" ii) ")=") conf ) ";"
+      file-close
+      
+      
+      set ii (ii + 1)
+
+    ]
+
+end
+
+to-report generate-configs-list
+  let res aux-arborescent [[0]]
+  foreach res [
+    if not member? 1 ? or not member? 2 ? [set res remove ? res] 
+  ]
+  report res
+end
+
+to-report aux-arborescent [lists]
+  ifelse length first lists = count centres [report lists]
+  [report sentence aux-arborescent map [lput 1 ?] lists aux-arborescent map [lput 2 ?] lists]
+end

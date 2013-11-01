@@ -1,0 +1,14 @@
+;;;;;;;;;;;;;;;;;;;;
+;;; Core for economic dynamical ABM
+;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;
+;;
+;; Distinction between intrinsic value and economic value ?
+;;   -> in that case, make them independant, would have no sense the other case
+;;   -> agents search to maximize intrinsic value but minimize economic (ie minimize rent), should work that way ?
+;;
+;;
+;;;;;;;;;;;;;;;;;;;;
+

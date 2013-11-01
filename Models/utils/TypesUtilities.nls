@@ -1,0 +1,18 @@
+;;type conversion functions
+
+
+to-report bool-to-int [boolean]
+  ifelse boolean [report 1][report 0]
+end
+
+to-report int-to-bool [integer]
+  ifelse integer != 0 [report true][report false]
+end
+
+
+
+;;global variables management from names as string
+
+to set-global [variable-name variable-value]
+  run word word word "set " variable-name " " variable-value
+end

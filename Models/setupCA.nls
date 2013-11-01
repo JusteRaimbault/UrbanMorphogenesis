@@ -1,0 +1,86 @@
+
+
+
+to setup
+  clear-all
+  reset-ticks
+  set-patch-size psize
+  resize-world 0 worldwidth 0 worldheight
+  set dmax sqrt ((world-width ^ 2) + (world-height ^ 2))
+  ask patches [set pcolor white set constructed? false set value 0]
+  set current-time-spent 0
+  
+  ;;setup centres
+  setup-centres
+  connect-centers
+  if not config-comparison? [setup-center-activities]
+  
+  ;;load background for concrete application (Massy)
+  ;import-drawing "/Users/Juste/Documents/Complex Systems/ProjetUrbanFramework/Datas/Atlantis.png"
+
+end
+
+
+
+
+;;setup function
+;;built core structure with centers
+to connect-centers
+    
+  ;;connect weak-components
+  let clusters []
+  while [length clusters = 0 or length clusters > 2] [
+     nw:set-snapshot turtles links
+     set clusters nw:weak-component-clusters
+     ;take one cluster, connects with the closest
+     let c1 first sort-by [([pxcor] of first ?1 < [pxcor] of first ?2) or (([pxcor] of first ?1 = [pxcor] of first ?2) and ([pycor] of first ?1 < [pycor] of first ?2))] (map [sort-by [([pxcor] of ?1 < [pxcor] of ?2) or (([pxcor] of ?1 = [pxcor] of ?2) and ([pycor] of ?1 < [pycor] of ?2))] ?] clusters)
+     let dmin dmax let tmin1 one-of turtles let tmin2 one-of turtles
+     foreach clusters[
+       ;fucking netlogo hardcore with implicit pointers
+       let aux remove 0 c1
+       foreach ? [set aux remove ? aux]
+         if  not empty? aux [
+           let d dmax let t1 one-of c1 let t2 one-of ?
+           foreach ? [
+             let t ?
+             foreach c1 [
+               ask ? [if distance t < d [set d distance t set t1 self set t2 t]] 
+             ]
+           ]
+           show d
+           if d < dmin [set dmin d set tmin1 t1 set tmin2 t2]
+         ]
+     ]
+     
+     ;;not proved totally yet : sometimes tmin1 = tmin2, why?
+     
+     if tmin1 != tmin2 [
+       ask tmin1 [create-path-with tmin2 [new-path]]
+     ]
+     
+  ]
+end
+
+
+
+
+;;shitty function -- have a look at that.
+to setup-center-activities
+  if not config-from-file? [
+    ;random distribution of Ncenters/Nactivities centers for each activities
+    let c []
+    ask centres [set c fput self c] ;convert agentset to list
+    let n floor (count centres) / activities-number
+    let a 0
+    repeat activities-number [
+      foreach n-of n c [
+        ask ? [
+          set activity a
+          set c remove self c
+        ]
+      ] 
+      set a a + 1
+    ]
+    ask centres [set color activity * 130 / activities-number show activity]
+  ]
+end
