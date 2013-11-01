@@ -7,8 +7,9 @@ to setup
   set-patch-size psize
   resize-world 0 worldwidth 0 worldheight
   set dmax sqrt ((world-width ^ 2) + (world-height ^ 2))
-  ask patches [set pcolor white set constructed? false set value 0]
   set current-time-spent 0
+  
+  setup-patches
   
   ;;setup centres
   setup-centres
@@ -19,6 +20,23 @@ to setup
   ;import-drawing "/Users/Juste/Documents/Complex Systems/ProjetUrbanFramework/Datas/Atlantis.png"
 
 end
+
+
+
+
+
+
+
+to setup-patches
+    ask patches [
+      set pcolor white
+      set constructed? false
+      set value 0
+      set rent 0
+   ]
+end
+
+
 
 
 

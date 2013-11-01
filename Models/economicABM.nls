@@ -12,3 +12,74 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;
 
+
+
+;;;;;;;;;;;;;;
+;; globals:
+;;  
+;;
+;;
+;; breeds and owned:
+;;
+;; breed[households household]
+;;
+;; households-own [
+;      ;;no need for pointer to the occupied place ?
+;      ;;wealth of same unit and scale than rent (to simplify)
+;      wealth
+;;
+;;
+;;
+;;
+;;;;;;;;;;;;;;;;
+
+
+;;setup for one single run (simple coupling)
+to setup-ABM
+  ;;;;;;;;
+  ;;requires:
+  ;;  - a distribution of values
+  ;;  - corresponding network (i.e. the CA model has already run)
+  ;;;;;;;
+  
+  
+  
+  setup-rents
+  
+  
+end
+
+to setup-rents
+  
+end
+
+
+;;go for one step (simple coupling)
+to go-one-step-ABM
+  ;;mobility for existing actors
+  move-existing-actors
+  
+  ;;new immigrants
+  add-incoming-actors
+  
+  ;;update rents
+  update-rents
+  
+  ;;display
+  display-ABM
+  
+end
+
+to move-existing-actors
+  
+end
+
+to add-incoming-actors
+  
+end
+
+to update-rents
+  ask patches with [constructed?][
+     
+  ]
+end

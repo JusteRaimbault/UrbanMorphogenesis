@@ -90,6 +90,9 @@ patches-own[
   pdistance-to-centre
   pspeed-from-patch
   pdistance-to-activities
+  
+  ;;dynamic economic value (will be seen as a "rent")
+  rent
 
 ]
 
