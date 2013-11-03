@@ -40,6 +40,36 @@ end
 
 
 
+to setup-centres
+  ifelse not config-from-file? [create-centres centers-number [ set shape "circle" set size 2 set color red setxy random world-width random world-height]]
+  [let pos "" ifelse not config-comparison? [set pos user-new-file][set pos "/Users/Juste/Documents/Complex Systems/ProjetUrbanFramework/Models/Activities/atlantis.txt"]
+   if pos != false [
+     file-open pos
+     let c file-read-line ; explanation line
+     let n 0
+     while [not file-at-end?][
+       let s file-read-line ;comment line
+       let x read-from-string file-read-line
+       let y read-from-string file-read-line
+       let a 0
+       if not config-comparison? [set a read-from-string file-read-line]
+       create-centres 1 [
+         set shape "circle" set size 3 setxy x y 
+         if not config-comparison? [ set color activity-color a set activity a]
+         set number n
+         ]
+       set n n + 1
+     ]
+     file-close 
+   ]
+    ]
+  
+  ask centres [create-paths-with ((other centres) with-min [distance myself]) with [not path-neighbor? myself][new-path]]
+end
+
+
+
+
 
 ;;setup function
 ;;built core structure with centers

@@ -1,0 +1,40 @@
+//réseaux biologiques
+(ex corps humain)
+réseau fractal
+
+contrainte densité
+
+Préciser que paquets existent.
+(maisons construites en même temps)
+
+remplacer le voisinage de Moore par un voisinage circulaire. (option ?)
+
+Attention: limite de l'update parallèle
+
+-> tester hypothèse continue
+(simulation sérielle)
+: soit une seule maison soit immeuble == paquet de maison
+
+comparer avec artefacts courants.
+
+attention n'en pas faire trop
+
+s'assurer
+ - travail original
+mais: fonctionne, produit résultats cohérents.
+
+exemples de différentes phases.
+tirer une leçon.
+(transformer le quantif en messages)
+
+-> ex bon mécanismes d'incitation.
+
+policy making.
+
+-> Discussion qui suit résultat.
+
+
+
+
+
+

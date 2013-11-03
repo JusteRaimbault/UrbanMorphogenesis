@@ -1,0 +1,38 @@
+to display-CA
+  color-patches
+  color-paths
+end
+
+
+to color-patches
+  let mi min [value] of patches
+  let ma max [value] of patches
+  ask patches[set pcolor scale-color yellow  value mi ma]
+end
+
+to color-paths
+  ask paths [set color red set thickness 0.3]
+  ask houses [set hidden? false]
+end
+
+
+
+
+
+;;;;;;;;;;;
+;; display functions for dynamic ABM
+;;;;;;;;;;
+
+
+to display-ABM
+  ;;colors of houses according to rents
+  let mir min [rent] of patches
+  let mar max [rent] of patches
+  ask houses [set color scale-color blue ([rent] of patch-here) mir mar]
+  
+  ;;size of people according to wealth
+  let mip min [wealth] of households
+  let maxp max [wealth] of households
+  
+  
+end

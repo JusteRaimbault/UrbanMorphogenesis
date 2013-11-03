@@ -28,8 +28,15 @@ __includes[
   ;;Evolutive ABM (economic evaluation)
   "economicABM.nls"
   
+  ;;Basic evaluation functions
+  "evaluation.nls"
+  
   ;;application and exploration of the model
   "application.nls"
+  
+  ;;display functions
+  "display.nls"
+  
   
   ;;Utilities
   "utils/ListUtilities.nls"
@@ -44,6 +51,15 @@ globals[
   
   ;;time profile spent in go at each tick
   current-time-spent
+  
+  
+  
+  
+  ;;globals for dynamical ABM
+  rent-update-radius
+  mean-economic-value
+  sigma-wealth
+  move-threshold
   
   
   ;;bounds as variables for efficiency purposes
@@ -72,9 +88,9 @@ breed[houses house]
 
 ;;network nodes
 breed[intersections intersection]
-
-
+;;network links
 undirected-link-breed [paths path]
+
 
 paths-own [path-length]
 
@@ -93,6 +109,7 @@ patches-own[
   
   ;;dynamic economic value (will be seen as a "rent")
   rent
+  next-rent
 
 ]
 
@@ -108,7 +125,7 @@ centres-own[
   ;;integer representing the activity of the center
   activity 
   
-  ;; ??
+  ;; is it useful ?
   number
 ]
 
@@ -122,45 +139,6 @@ centres-own[
 
 
 
-
-to setup-centres
-  ifelse not config-from-file? [create-centres centers-number [ set shape "circle" set size 2 set color red setxy random world-width random world-height]]
-  [let pos "" ifelse not config-comparison? [set pos user-new-file][set pos "/Users/Juste/Documents/Complex Systems/ProjetUrbanFramework/Models/Activities/atlantis.txt"]
-   if pos != false [
-     file-open pos
-     let c file-read-line ; explanation line
-     let n 0
-     while [not file-at-end?][
-       let s file-read-line ;comment line
-       let x read-from-string file-read-line
-       let y read-from-string file-read-line
-       let a 0
-       if not config-comparison? [set a read-from-string file-read-line]
-       create-centres 1 [
-         set shape "circle" set size 3 setxy x y 
-         if not config-comparison? [ set color activity-color a set activity a]
-         set number n
-         ]
-       set n n + 1
-     ]
-     file-close 
-   ]
-    ]
-  
-  ask centres [create-paths-with ((other centres) with-min [distance myself]) with [not path-neighbor? myself][new-path]]
-end
-
-to color-patches
-  let mi min [value] of patches
-  let ma max [value] of patches
-  ask patches[set pcolor scale-color yellow  value mi ma]
-end
-
-to color-paths
-  ask paths [set color red set thickness 0.3]
-  ask houses [show-turtle]
-end
-
 to new-path
   set color red set thickness 0.3
   set path-length path-length
@@ -171,8 +149,23 @@ to new-house set shape "house" set size 1 set color blue end
 ;; go : one iteration
 ; cell by cell : need to be constructed? evolve network if needed
 to go
-  update-vars
-  ask patches [set value patch-value]
+
+  ;;calculate new patches values  
+  update-patches-values
+  
+  ;;build new houses and roads
+  sprawl  
+
+  
+  display-CA
+  
+  
+  tick
+end
+
+
+to sprawl
+  
   ask max-n-of built-cells-per-tick (patches with [not constructed?]) [value] [
     set constructed? true
     sprout-houses 1 [new-house]
@@ -205,11 +198,12 @@ to go
       ]
     ]
   ]
-  color-patches
-  color-paths
   
-  
-  tick
+end
+
+to update-patches-values
+  update-vars
+  ask patches [set value patch-value]
 end
 
 
@@ -496,31 +490,6 @@ end
 
 
 
-to-report eval-speed
-  report ((sum [pspeed-from-patch ^ p-speed] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-speed )
-end
-
-
-;;density
-to-report eval-density
-  ;;global density : really pertinent?
-;  let xmin min [pxcor] of patches with [constructed?]
-;  let xmax max [pxcor] of patches with [constructed?]
-;  let ymin min [pycor] of patches with [constructed?]
-;  let ymax max [pycor] of patches with [constructed?]
-;  let ntot count patches with [pxcor >= xmin and pxcor <= xmax and pycor >= ymin and pycor <= ymax]
-;  let nc count patches with [pxcor >= xmin and pxcor <= xmax and pycor >= ymin and pycor <= ymax and constructed?]
-;  report nc / ntot
-
-  ;; test local density with certain norm on all cells
-    report ((sum [pdensity ^ p-density] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-density )
-
-end
-
-to-report eval-activities
-    report ((sum [pdistance-to-activities ^ p-activities] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-activities )
-end
-
 
 
 
@@ -535,11 +504,11 @@ end
 GRAPHICS-WINDOW
 529
 23
-979
-539
+908
+423
 -1
 -1
-5.0
+9.0
 1
 10
 1
@@ -550,9 +519,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-87
+40
 0
-96
+40
 1
 1
 1
@@ -568,7 +537,7 @@ psize
 psize
 1
 20
-5
+9
 1
 1
 NIL
@@ -583,7 +552,7 @@ worldwidth
 worldwidth
 1
 200
-87
+40
 1
 1
 NIL
@@ -598,7 +567,7 @@ worldheight
 worldheight
 1
 200
-96
+40
 1
 1
 NIL
@@ -630,7 +599,7 @@ centers-number
 centers-number
 1
 20
-7
+3
 1
 1
 NIL
@@ -705,7 +674,7 @@ distance-road-needed
 distance-road-needed
 0
 50
-3.9
+1.7
 0.1
 1
 NIL
@@ -720,7 +689,7 @@ built-cells-per-tick
 built-cells-per-tick
 0
 100
-29
+4
 1
 1
 NIL
@@ -827,7 +796,7 @@ activities-number
 activities-number
 0
 10
-5
+3
 1
 1
 NIL
@@ -901,7 +870,7 @@ p-speed
 p-speed
 1
 100
-3
+4
 1
 1
 NIL
@@ -1015,31 +984,48 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [pdistance-to-roads] of patches"
 
 @#$#@#$#@
-## WHAT IS IT?
+# WHAT IS IT?
 
 Hybrid model (CA coupled with evolving network) for Urban configuration optimisation.
 
-## HOW IT WORKS
+# HOW IT WORKS
+
+##Agents and rules
 
 
 
+##Evaluation functions
 
 
-## HOW TO USE IT
+# HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+##Basic use
 
-## THINGS TO NOTICE
+Set the weights for the influence of the different variables (distance to centres, to activities, density)
+The growing shape (as a sprawl) will strongly depend on these
 
-(suggested things for the user to notice while running the model)
-
-## THINGS TO TRY
-
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
-
-## EXTENDING THE MODEL
+##Application
 
 
+
+# EXTENDING THE MODEL
+
+
+
+##TODO List
+
+###Implementation
+
+  - more neighboorhood should not be squared
+  - improve speed of model: heuristic for closest road !
+  - set random seed as an option !!!
+
+###Results
+  - classification of shapes: compare to radioconcentrique/ciudad linear
+  - revoir application: scale!!! planning of areas and activities
+
+
+##Possible future extensions
 
 ;;add network auto-evolution :: add paths if not direct (eval all x ticks) ; evolve capacity of paths % density and quantity that goes through.
 
@@ -1048,19 +1034,18 @@ Hybrid model (CA coupled with evolving network) for Urban configuration optimisa
 ;; irregular grid?? // elevation
 
 
-## NETLOGO FEATURES
+# RELATED MODELS
 
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
+See Urban suite and Refs.
 
-## RELATED MODELS
+# CREDITS AND REFERENCES
 
-(models in the NetLogo Models Library and elsewhere which are of related interest)
+##Conception and implementation:
+Juste Raimbault
+Dép HSS, Ecole Polytechnique
+LVMT, Ecole Nationale des Ponts et Chaussées
 
-## CREDITS AND REFERENCES
-
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
-
-
+##References
 
 
 Try of quick implantation of the Raumulus Model

@@ -1,0 +1,35 @@
+;;;;;;;;;;;;;;;;
+;; Evaluation functions
+;;;;;;;;;;;;;;;;
+
+
+
+
+to-report eval-speed
+  report ((sum [pspeed-from-patch ^ p-speed] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-speed )
+end
+
+
+;;density
+to-report eval-density
+  ;;global density : really pertinent?
+;  let xmin min [pxcor] of patches with [constructed?]
+;  let xmax max [pxcor] of patches with [constructed?]
+;  let ymin min [pycor] of patches with [constructed?]
+;  let ymax max [pycor] of patches with [constructed?]
+;  let ntot count patches with [pxcor >= xmin and pxcor <= xmax and pycor >= ymin and pycor <= ymax]
+;  let nc count patches with [pxcor >= xmin and pxcor <= xmax and pycor >= ymin and pycor <= ymax and constructed?]
+;  report nc / ntot
+
+  ;; test local density with certain norm on all cells
+    report ((sum [pdensity ^ p-density] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-density )
+
+end
+
+to-report eval-activities
+    report ((sum [pdistance-to-activities ^ p-activities] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-activities )
+end
+
+to-report global-eval [varname]
+  
+end
