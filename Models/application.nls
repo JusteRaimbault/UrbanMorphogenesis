@@ -21,13 +21,13 @@ to compare-activities-configurations
       
       let n 0
       let conf 0
-      foreach ? [ask centres with [number = n] [set activity ? set color activity-color activity] set n n + 1 set conf (10 * conf) + ?]
+      foreach ? [ask centres with [number = n] [set activity ? set color 140 * ? / activities-number] set n n + 1 set conf (10 * conf) + ?]
       
       ;ask centres [show word "number" number show word "activity" activity]
       
       
       ;;generate urban shape
-      while [ ticks < ticks-number ][
+      while [ ticks < max-ticks ][
         go
       ]
       

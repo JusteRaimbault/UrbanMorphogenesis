@@ -31,5 +31,72 @@ to-report eval-activities
 end
 
 to-report global-eval [varname]
+  ;;generic function for integration of a local field through p-norm
+  report norm-p (runresult (word "p-" varname)) (runresult (word word "[p" varname "] of patches with [constructed?]"))
+end
+
+
+;;;;;;;;;;;;;;;;
+;;Moran index for population
+;;;;;;;;;;;;;;;
+;; Note: recuperation of old code
+to-report spatial-autocorrelation-index
+  ;;dirty but try to be efficient : sort agents lexically on coordinates
+  ;;would be more efficient with single pass on patches for all species, but function would be totally unreadable
+  clear-table-moran
+  let ag sort-by [lexcomp ?1 ?2 (list task [floor (xcor / moran-grid-size)] task [floor (ycor / moran-grid-size)])] houses
+  let min-ag first ag
+  let pop-count length ag
+  ;;let cut the space in subregions, 50*50 should be enough precise
+  ;;count are held in a table: for square x=i*step,y=j*step : (i,j) -> agents_count
+  ;;table initialised with plots
+  let i 0 let j 0 let xmax moran-grid-size let ymax moran-grid-size let ended? false
+  repeat floor (world-width / moran-grid-size) [
+     repeat floor (world-height / moran-grid-size) [
+       while [not ended? and [xcor] of first ag < xmax and [ycor] of first ag < ymax] [
+         table:put moran-populations (list i j) (table:get moran-populations (list i j) + 1)
+         set ag but-first ag
+         if length ag = 0 [set ended? true]        
+       ]
+       set ymax ymax + moran-grid-size
+       set j j + 1
+     ]
+     set xmax xmax + moran-grid-size set ymax moran-grid-size
+     set i i + 1 set j 0
+  ]
+  
+  let N length table:keys moran-populations
+  let d-mean pop-count / N
+  let W 0 let S 0 let norm-factor 0
+  foreach table:keys moran-populations [
+    let site-i ? foreach table:keys moran-populations [
+      let site-j ?
+      if site-j != site-i [
+        let weight  1 / (sqrt ((first site-i - first site-j) ^ 2 + (last site-i - last site-j) ^ 2 ))
+        set W W + weight
+        set S S + weight * (table:get moran-populations site-i - d-mean) * (table:get moran-populations site-j - d-mean)
+      ]
+    ]
+    set norm-factor norm-factor + ((table:get moran-populations site-i - d-mean) ^ 2 )
+  ]
+  report N * S / (W * norm-factor)
+end
+
+to clear-table-moran
+  let i 0 let j 0
+  repeat floor (world-width / moran-grid-size) [
+     repeat floor (world-height / moran-grid-size) [
+       table:put moran-populations (list i j) 0 set j j + 1
+     ] set j 0 set i i + 1
+  ]
   
 end
+
+
+
+
+
+
+
+
+

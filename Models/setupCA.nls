@@ -2,6 +2,17 @@
 
 
 to setup
+  setup-world
+  setup-centres  
+  setup-network
+  if not config-comparison? [setup-center-activities]
+  setup-patches
+  setup-reporters
+end
+
+
+
+to setup-world
   clear-all
   reset-ticks
   set-patch-size psize
@@ -9,21 +20,11 @@ to setup
   set dmax sqrt ((world-width ^ 2) + (world-height ^ 2))
   set current-time-spent 0
   
-  setup-patches
-  
-  ;;setup centres
-  setup-centres
-  connect-centers
-  if not config-comparison? [setup-center-activities]
-  
-  ;;load background for concrete application (Massy)
-  ;import-drawing "/Users/Juste/Documents/Complex Systems/ProjetUrbanFramework/Datas/Atlantis.png"
-
+  ;;profiler for debug purposes
+  profiler:reset
+  profiler:start
+  set tracker-time 0
 end
-
-
-
-
 
 
 
@@ -31,9 +32,15 @@ to setup-patches
     ask patches [
       set pcolor white
       set constructed? false
+      set constructible? true
       set value 0
       set rent 0
-   ]
+    ]
+    
+    ;;deal with already existing nw and centers
+    ask patches with [count centres-here > 0] [set constructible? false]
+    ;;could count some twice, however, isolated centers ? NO ! previous line ~
+    ask paths [foreach footprint [ask ? [set constructible? false]]]
 end
 
 
@@ -41,7 +48,7 @@ end
 
 
 to setup-centres
-  ifelse not config-from-file? [create-centres centers-number [ set shape "circle" set size 2 set color red setxy random world-width random world-height]]
+  ifelse not config-from-file? [create-centres centers-number [ set shape "circle" set size 1 set color red setxy random world-width random world-height]]
   [let pos "" ifelse not config-comparison? [set pos user-new-file][set pos "/Users/Juste/Documents/Complex Systems/ProjetUrbanFramework/Models/Activities/atlantis.txt"]
    if pos != false [
      file-open pos
@@ -55,7 +62,7 @@ to setup-centres
        if not config-comparison? [set a read-from-string file-read-line]
        create-centres 1 [
          set shape "circle" set size 3 setxy x y 
-         if not config-comparison? [ set color activity-color a set activity a]
+         if not config-comparison? [ set color 140 * a / activities-number set activity a]
          set number n
          ]
        set n n + 1
@@ -73,7 +80,7 @@ end
 
 ;;setup function
 ;;built core structure with centers
-to connect-centers
+to setup-network
     
   ;;connect weak-components
   let clusters []
@@ -132,3 +139,13 @@ to setup-center-activities
     ask centres [set color activity * 130 / activities-number show activity]
   ]
 end
+
+
+to setup-reporters
+  ;;settings for moran index
+  set moran-populations table:make
+  set moran-grid-size floor (world-width / 10) ;;good compromise regarding complexity ?
+end
+
+
+

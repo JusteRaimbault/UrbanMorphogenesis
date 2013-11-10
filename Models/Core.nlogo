@@ -17,13 +17,19 @@
 
 
 
-extensions[nw profiler]
+extensions[nw table profiler]
 
 
 __includes[
   
-  ;;functions for CA-Network
+  ;;main functions
+  "main.nls"
+  
+  ;;setup functions for CA-Network
   "setupCA.nls"
+  
+  ;;patches procedures
+  "patches.nls"
   
   ;;Evolutive ABM (economic evaluation)
   "economicABM.nls"
@@ -33,6 +39,7 @@ __includes[
   
   ;;application and exploration of the model
   "application.nls"
+  "exploration.nls"
   
   ;;display functions
   "display.nls"
@@ -42,25 +49,48 @@ __includes[
   "utils/ListUtilities.nls"
   "utils/EuclidianDistancesUtilities.nls"
   "utils/TypesUtilities.nls"
-  
+  "utils/LinkUtilities.nls"  
+  "utils/SortingUtilities.nls"
+  "utils/FileUtilities.nls"
 ]
 
 
 globals[
   
+  ;;;;;;;;;;;;;;
+  ;; Rq : all globals including slider vars are listed here for comprehension purposes
+  ;; vars in sliders are commented of course
+  ;;;;;;;;;;;;;;
   
-  ;;time profile spent in go at each tick
-  current-time-spent
+  
+  ;;;;;;;;;;;;;
+  ;; Core parameters
+  ;;;;;;;;;;;;;
+  
+  ;distance-to-activities-coefficient
+  ;density-coefficient
+  ;distance-to-roads-coeficient
   
   
-  
-  
+  ;;;;;;;;;;;;;
   ;;globals for dynamical ABM
-  rent-update-radius
+  ;;;;;;;;;;;;;
+  
+  ;rent-update-radius
   mean-economic-value
   sigma-wealth
-  move-threshold
+  ;move-threshold
+  new-incomers-number
   
+  ;;updated lists of available places
+  ;;(efficiency purposes)
+  available-houses
+  
+  ;;;;;;;;;;;;;
+  ;;globals for other evaluation functions
+  ;;;;;;;;;;;;;
+  moran-grid-size
+  moran-populations
   
   ;;bounds as variables for efficiency purposes
   density-max
@@ -72,6 +102,19 @@ globals[
   distance-to-activities-max
   distance-to-activities-min
   dmax
+  
+  
+  ;;;;;;;;;;;;;;
+  ;; Runtime vars
+  ;;;;;;;;;;;;;
+  
+  ;;time profile spent in go at each tick
+  current-time-spent
+  
+  ;;tracker
+  tracker-time
+  
+  
   
 ]
 
@@ -92,12 +135,17 @@ breed[intersections intersection]
 undirected-link-breed [paths path]
 
 
-paths-own [path-length]
+
 
 
 patches-own[
   
+  ;;is the patch constructed ?
   constructed?
+  
+  ;;can it be contructed? (no road or no center)
+  ;;-> when a new road is constructed, destroy old ones and set not constructible
+  constructible?
   
   ;;objective value of the patch and associated internediate variables
   value
@@ -108,14 +156,10 @@ patches-own[
   pdistance-to-activities
   
   ;;dynamic economic value (will be seen as a "rent")
+  ;;for ABM economic evaluation
   rent
   next-rent
 
-]
-
-
-intersections-own[
-  new?
 ]
 
 
@@ -127,388 +171,30 @@ centres-own[
   
   ;; is it useful ?
   number
+  
+  net-d-to-centre
+  net-d-to-activities
 ]
 
 
 
-
-
-
-
-
-
-
-
-to new-path
-  set color red set thickness 0.3
-  set path-length path-length
-end
-
-to new-house set shape "house" set size 1 set color blue end
-
-;; go : one iteration
-; cell by cell : need to be constructed? evolve network if needed
-to go
-
-  ;;calculate new patches values  
-  update-patches-values
-  
-  ;;build new houses and roads
-  sprawl  
-
-  
-  display-CA
-  
-  
-  tick
-end
-
-
-to sprawl
-  
-  ask max-n-of built-cells-per-tick (patches with [not constructed?]) [value] [
-    set constructed? true
-    sprout-houses 1 [new-house]
-    if distance-to-roads > distance-road-needed [ ;; construct a new road !! not "static var here" (iterative construction of the network -> random effects)
-      let nearest-centre first sort-on [distance myself] centres
-      let nearest-centre-distance distance nearest-centre
-      ifelse count paths = 0 or distance-to-roads > nearest-centre-distance [
-        sprout-intersections 1 [create-path-with nearest-centre [new-path]]
-      ]
-      [
-        
-        let mx pxcor
-        let my pycor
-        let nearest-path first sort-on [distance-to-point mx my] paths
-        
-        let inter one-of turtles
-        ask nearest-path [
-          set inter intersection-with mx my
-        ]
-   
-        let e1 one-of intersections let e2 one-of intersections
-        ask nearest-path [
-          set e1 end1
-          set e2 end2
-          die
-        ]
-        ask inter [if inter != e1 [create-path-with e1 [new-path]] if inter != e2 [ create-path-with e2 [new-path]]]
-
-        sprout-intersections 1 [hide-turtle create-path-with inter [new-path]]
-      ]
-    ]
-  ]
-  
-end
-
-to update-patches-values
-  update-vars
-  ask patches [set value patch-value]
-end
-
-
-
-
-
-;;descriptives variables : cells variables
-  
-to-report density
-let s 0 let x pxcor let y pycor let i (- neighborhood-radius) let j (- neighborhood-radius)
-repeat (2 * neighborhood-radius + 1) [
-   set j (- neighborhood-radius)
-   repeat (2 * neighborhood-radius + 1)[
-     if x + i >= 0 and y + j >= 0 and  x + i <= worldwidth and y + j <= worldheight [
-       ask patch (x + i) (y + j) [if constructed? [set s s + 1]]
-     ]
-     set j j + 1
-   ]
-   set i i + 1
-] 
-report s / (((2 * neighborhood-radius) + 1) ^ 2)
-end
-
-
-to-report distance-to-roads
-  ;find the nearest road and calculate the distance to it
-  ifelse count paths = 0 [
-    ;no roads, report nearest center (always one)
-    report distance first sort-on [distance myself] centres
-  ]
-  [
-    let mx pxcor
-    let my pycor
-    let nearest-path first sort-on [distance-to-point mx my] paths 
-    let inter one-of turtles let e1 0 let e2 0
-    ask nearest-path [
-      set inter intersection-with mx my
-      set e1 end1 set e2 end2
-    ]
-
-    let d distance inter
-    if inter != e1 and inter != e2 [ask inter [die]]
-    report d
-  ]
-end
-
-
-
-
-
-
-to-report distance-to-centre
-  ;;find the nearest road 
-  ; add an intersection at the connection point 
-  ; take snapshot and make djikstra 
-  ; reput the old configuration
-  
-  ;; Warning : needs a weighted distance !!
-  
-  ifelse count paths = 0 [
-    ;no roads, report nearest center (always one)
-    report distance first sort-on [distance myself] centres
-  ]
-  [
-   let mx pxcor
-   let my pycor
-   let d2 0
-   let nearest-path first sort-on [distance-to-point mx my] paths
-   
-   let inter one-of turtles
-    ask nearest-path [
-      set inter intersection-with mx my
-    ]
-   
-   let e1 one-of intersections let e2 one-of intersections
-   ask nearest-path [
-     set d2 distance-to-point mx my
-     set e1 end1
-     set e2 end2
-     die
-   ]
-   ask inter [if inter != e1 [create-path-with e1 [new-path]] if inter != e2 [ create-path-with e2 [new-path]]]
-   
-   nw:set-snapshot turtles paths
-   ask paths [set path-length path-length] ; to own the variable
-   let d3 0
-   ask inter [
-     set d3 intvalue nw:weighted-distance-to first sort-on [intvalue nw:weighted-distance-to myself "path-length"] centres "path-length"
-   ]
-   if inter != e1 and inter != e2 [
-     ask inter [ask my-paths [die] die]
-     ask e1 [create-path-with e2 [new-path]]
-   ]
-   report d2 + d3
-  ]
-   
-end
-
-;behavior of that function? always connex! so for the center to have distance to itself zero!
-to-report intvalue [n]
-  ifelse is-number? n [report n][report 0]
-end
-
-
-
-
-
-to-report distance-to-activity [a]
-  ;;find the nearest road 
-  ; add an intersection at the connection point 
-  ; take snapshot and make djikstra 
-  ; reput the old configuration
-  
-  ;; Warning : needs a weighted distance !!
-  
-  ifelse count paths = 0 [
-    ;no roads, report nearest center (always one)
-    report distance first sort-on [distance myself] centres
-  ]
-  [
-   let mx pxcor
-   let my pycor
-   let d2 0
-   let nearest-path first sort-on [distance-to-point mx my] paths
-   
-   let inter one-of turtles
-    ask nearest-path [
-      set inter intersection-with mx my
-    ]
-   
-   let e1 one-of intersections let e2 one-of intersections
-   ask nearest-path [
-     set d2 distance-to-point mx my
-     set e1 end1
-     set e2 end2
-     die
-   ]
-   ask inter [if inter != e1 [create-path-with e1 [new-path]] if inter != e2 [ create-path-with e2 [new-path]]]
-   
-   nw:set-snapshot turtles paths
-   ask paths [set path-length path-length] ; to own the variable
-   let d3 0
-   ask inter [
-     set d3 intvalue nw:weighted-distance-to first sort-on [intvalue nw:weighted-distance-to myself "path-length"] centres with [activity = a] "path-length"
-   ]
-   if inter != e1 and inter != e2 [
-     ask inter [ask my-paths [die] die]
-     ask e1 [create-path-with e2 [new-path]]
-   ]
-   report d2 + d3
-  ]
-   
-end
-
-
-to test-distance-to-activity
-  let a 0
-  repeat activities-number [
-    ask patch 0 0 [show distance-to-activity a]
-    set a a + 1 
-  ]
-end
-
-
-;;first test with no preferences of patches for given activities : choose max ??
-to-report distance-to-activities
-  let a 0
-  let s 0
-  repeat activities-number [ifelse activities-norma = -1 [set s max (list s distance-to-activity a)] [set s s + ( (distance-to-activity a) ^ activities-norma)] set a a + 1]
-  ifelse activities-norma = -1 [report  s] [report s ^ (1 / activities-norma)]
-end
-
-
-
-;common function to both second variables : return turtle at the junction of the nearest road
-; maybe exists a mor efficient method, but now test all roads
-to-report intersection-with-nearest-road
-  ifelse count paths = 0 [
-    ;no roads, report nearest center (always one)
-    report first sort-on [distance myself] centres
-  ]
-  [
-    let mx pxcor
-    let my pycor
-    let nearest-path first sort-on [distance-to-point mx my] paths
-    let inter one-of turtles
-    ask nearest-path [
-      set inter intersection-with mx my
-    ]
-    report inter
-  ]
-  
-end
-
-
-;;
-;; NEED MORE DEBUGGING -> PB WHEN GETS OUT OF THE WORLD?
-;;
-
-to-report intersection-with [x y]
-  let x1 0 let y1 0 let x2 0 let y2 0
-  ask end1[set x1 xcor
-  set y1 ycor]
-  ask end2 [set x2 xcor
-  set y2 ycor]
-  let m1m sqrt (((x1 - x ) ^ 2) + ((y1 - y) ^ 2))
-  let m2m sqrt (((x2 - x ) ^ 2) + ((y2 - y) ^ 2))
-  let m1m2 sqrt (((x1 - x2 ) ^ 2) + ((y1 - y2) ^ 2))
-  if m1m = 0 or m1m2 = 0 [report end1]
-  if m2m = 0 [report end2]
-  let cost1 (((x - x1)*(x2 - x1)) + ((y - y1)*(y2 - y1)))/(m1m * m1m2)
-  let cost2 (((x - x2)*(x1 - x2)) + ((y - y2)*(y1 - y2)))/(m2m * m1m2)
-    
-  let mq 0 let xx 0 let yy 0 let m1q 0
-  
-  ifelse cost1 < 0 [
-     report end1
-
-  ]
-  [
-  ifelse cost2 < 0 [
-     report end2
-
-  ]
-  [set mq m1m * sqrt abs (1 - (cost1 ^ 2))
-   set m1q sqrt ((m1m ^ 2) - (mq ^ 2))  
-   set xx x1 + m1q * (x2 - x1) / m1m2
-   set yy y1 + m1q * (y2 - y1) / m1m2
-   
-   if count intersections-on patch xx yy = 0 and count centres-on patch xx yy = 0 [
-     ask patch xx yy [sprout-intersections 1 [
-       setxy xx yy
-       if not is-centre? self [hide-turtle]]
-     ]
-   ]
-  report one-of turtles-on patch xx yy
-   ]
-  ]
-  
-end
-
-
-to update-vars
-    ask patches [set pdensity density set pdistance-to-roads distance-to-roads set pdistance-to-centre distance-to-centre set pdistance-to-activities distance-to-activities]
-    set density-max max [pdensity] of patches
-    set density-min min [pdensity] of patches
-    set distance-to-roads-max max [pdistance-to-roads] of patches
-    set distance-to-roads-min min [pdistance-to-roads] of patches
-    set distance-to-centre-max max [pdistance-to-centre] of patches
-    set distance-to-centre-min min [pdistance-to-centre] of patches
-    set distance-to-activities-max max [pdistance-to-activities] of patches
-    set distance-to-activities-min min [pdistance-to-activities] of patches
-end
-
-
-;calculate the patch value thanks to the 3 variables
-to-report patch-value
-  let c1 density-coefficient let c2 distance-to-roads-coefficient let c3 distance-to-center-coefficient let c4 distance-to-activities-coefficient
-  let c c1 + c2 + c3 + c4
-  let d1 pdensity let d2 pdistance-to-roads let d3 pdistance-to-centre let d4 pdistance-to-activities
-
-  let dd1 density-max - density-min
-  let dd2 distance-to-roads-max - distance-to-roads-min
-  let dd3 distance-to-centre-max - distance-to-centre-min
-  let dd4 distance-to-activities-max - distance-to-activities-min
-  if dd1 = 0 [set c1 0 set dd1 1]
-  if dd2 = 0 [set c2 0 set dd2 1]
-  if dd3 = 0 [set c3 0 set dd3 1]
-  if dd4 = 0 [set c4 0 set dd4 1]
-  
-  let s (c1 * (density-max - d1) / dd1) + (c2 * (distance-to-roads-max - d2 ) / dd2) + (c3 * (distance-to-centre-max - d3 ) / dd3) + (c4 * (distance-to-activities-max - d4 ) / dd4) 
-
-  report 100 * s / c
-  
-end
-
-
-
-to-report speed-from-patch
-  let eucli distance first sort-on [distance myself] centres
-  ifelse eucli = 0 [report 1]
-  [report pdistance-to-centre / (eucli)]
-end
-
-
-
-
-
-
-
-to-report activity-color [a]
-  if a = 0 [report 0]
-  if a = 1 [report 25]
-  if a = 2 [report 115]
-end
+intersections-own[
+  ;;cache variable for network distances
+  net-d-to-centre ;scalar
+  net-d-to-activities ;list:index i is activity i
+]
+
+paths-own [path-length]
 
 @#$#@#$#@
 GRAPHICS-WINDOW
 529
 23
-908
-423
+987
+502
 -1
 -1
-9.0
+8.0
 1
 10
 1
@@ -519,9 +205,9 @@ GRAPHICS-WINDOW
 0
 1
 0
-40
+55
 0
-40
+55
 1
 1
 1
@@ -531,53 +217,53 @@ ticks
 SLIDER
 11
 14
-183
+103
 47
 psize
 psize
 1
 20
+8
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
 9
+49
+104
+82
+worldwidth
+worldwidth
+1
+200
+55
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-11
-54
-183
-87
-worldwidth
-worldwidth
-1
-200
-40
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-12
-94
-184
-127
+9
+84
+105
+117
 worldheight
 worldheight
 1
 200
-40
+55
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-259
-23
-325
-56
+351
+25
+417
+58
 NIL
 setup
 NIL
@@ -591,40 +277,40 @@ NIL
 1
 
 SLIDER
-15
-163
-187
-196
+8
+119
+127
+152
 centers-number
 centers-number
 1
 20
-3
+2
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-21
-332
-209
-365
+349
+126
+493
+159
 neighborhood-radius
 neighborhood-radius
 1
 10
-6
+5
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-25
-544
-197
-577
+38
+317
+213
+350
 density-coefficient
 density-coefficient
 -1
@@ -636,25 +322,25 @@ NIL
 HORIZONTAL
 
 SLIDER
-26
-584
-265
-617
+39
+357
+213
+390
 distance-to-roads-coefficient
 distance-to-roads-coefficient
 -1
 1
-0
+1
 0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-26
-625
-268
-658
+39
+398
+213
+431
 distance-to-center-coefficient
 distance-to-center-coefficient
 -1
@@ -666,42 +352,42 @@ NIL
 HORIZONTAL
 
 SLIDER
-305
-543
-498
-576
+349
+89
+511
+122
 distance-road-needed
 distance-road-needed
 0
 50
-1.7
+6
 0.1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-306
-583
-485
-616
+349
+162
+491
+195
 built-cells-per-tick
 built-cells-per-tick
 0
 100
-4
+15
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-344
-23
-407
-56
+424
+25
+487
+58
 go
-profiler:reset\nprofiler:start\ngo\nset current-time-spent profiler:inclusive-time \"go\"
+go\nset current-time-spent profiler:inclusive-time \"go\"
 T
 1
 T
@@ -713,32 +399,32 @@ NIL
 1
 
 MONITOR
-1229
-24
-1369
-69
-patches constructed
-count patches with [constructed?]
+1292
+21
+1346
+66
+houses
+count houses
 5
 1
 11
 
 MONITOR
-1231
-80
-1336
-125
-road segments
+1352
+22
+1402
+67
+roads
 count links
 17
 1
 11
 
 PLOT
-1002
-403
-1162
-523
+1047
+319
+1207
+439
 patches values
 ticks
 values
@@ -754,59 +440,26 @@ PENS
 "pen-1" 1.0 0 -7500403 true "" "plot max [value] of patches"
 "pen-2" 1.0 0 -2674135 true "" "plot min [value] of patches"
 
-MONITOR
-993
-28
-1087
-73
-Mean density
-mean [pdensity] of patches
-17
-1
-11
-
-MONITOR
-1090
-24
-1202
-69
-Mean d to roads
-mean [pdistance-to-roads] of patches
-17
-1
-11
-
-MONITOR
-998
-80
-1114
-125
-Mean d to centre
-mean [pdistance-to-centre] of patches
-17
-1
-11
-
 SLIDER
-15
-209
-187
-242
+8
+153
+127
+186
 activities-number
 activities-number
 0
 10
-3
+2
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-26
-502
-243
-535
+39
+275
+214
+308
 distance-to-activities-coefficient
 distance-to-activities-coefficient
 0
@@ -818,10 +471,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-352
-497
-524
-530
+349
+197
+499
+230
 activities-norma
 activities-norma
 -1
@@ -843,18 +496,20 @@ time
 0.0
 10.0
 0.0
-10.0
+3.0
 true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot current-time-spent / 1000"
+"default" 1.0 0 -10022847 true "" "plot current-time-spent / 1000"
+"pen-1" 1.0 0 -15040220 true "" "plot profiler:inclusive-time \"sprawl\" / 1000"
+"pen-2" 1.0 0 -14985354 true "" "plot profiler:inclusive-time \"go\" / 1000"
 
 SWITCH
-212
-72
-376
-105
+109
+50
+255
+83
 config-from-file?
 config-from-file?
 1
@@ -862,55 +517,40 @@ config-from-file?
 -1000
 
 SLIDER
-351
-459
-523
-492
+296
+350
+468
+383
 p-speed
 p-speed
 1
 100
-4
+3
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-251
-118
-423
-151
-param-step
-param-step
-0
+106
+16
+198
+49
+max-ticks
+max-ticks
 1
-0.1
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-251
-160
-423
-193
-ticks-number
-ticks-number
-1
-50
-4
+500
+20
 1
 1
 NIL
 HORIZONTAL
 
 SWITCH
-386
-71
-509
-104
+108
+84
+231
+117
 config-comparison?
 config-comparison?
 1
@@ -918,10 +558,10 @@ config-comparison?
 -1000
 
 SLIDER
-351
-422
-523
-455
+296
+313
+468
+346
 p-density
 p-density
 1
@@ -933,10 +573,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-351
-385
-523
-418
+296
+276
+468
+309
 p-activities
 p-activities
 1
@@ -948,10 +588,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1002
-142
-1162
-262
+1047
+74
+1207
+194
 local densities
 NIL
 NIL
@@ -964,12 +604,14 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot mean [pdensity] of patches"
+"pen-1" 1.0 0 -7500403 true "" "plot min [pdensity] of patches"
+"pen-2" 1.0 0 -2674135 true "" "plot max [pdensity] of patches"
 
 PLOT
-1168
-141
-1328
-261
+1208
+74
+1368
+194
 d to roads
 NIL
 NIL
@@ -982,6 +624,180 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot mean [pdistance-to-roads] of patches"
+"pen-1" 1.0 0 -7500403 true "" "plot min [pdistance-to-roads] of patches"
+"pen-2" 1.0 0 -2674135 true "" "plot max [pdistance-to-roads] of patches"
+
+BUTTON
+19
+513
+90
+546
+NIL
+setup-ABM
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+20
+551
+89
+584
+go ABM
+go-one-step-ABM
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SLIDER
+94
+514
+221
+547
+move-threshold
+move-threshold
+0
+1
+0.9
+0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+95
+552
+269
+585
+rent-update-radius
+rent-update-radius
+0
+30
+5
+1
+1
+NIL
+HORIZONTAL
+
+BUTTON
+277
+26
+340
+59
+clear
+ask houses [die]\nask intersections [die] ask links [die]\nask one-of centres [create-path-with one-of other centres [new-path]]\nask patches [set constructed? false set constructible? true]\nask links [foreach footprint [ask ? [set constructible? false]]]
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+1190
+602
+1240
+647
+tracker
+tracker-time * 1000 / (profiler:inclusive-time \"go\")
+5
+1
+11
+
+PLOT
+1047
+196
+1207
+316
+distance to centres
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot mean [pdistance-to-centre] of patches"
+"pen-1" 1.0 0 -7500403 true "" "plot min [pdistance-to-centre] of patches"
+"pen-2" 1.0 0 -2674135 true "" "plot max [pdistance-to-centre] of patches"
+
+PLOT
+1208
+196
+1368
+316
+accessibility of activities
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot mean [pdistance-to-activities] of patches"
+"pen-1" 1.0 0 -7500403 true "" "plot min [pdistance-to-activities] of patches"
+"pen-2" 1.0 0 -2674135 true "" "plot max [pdistance-to-activities] of patches"
+
+TEXTBOX
+72
+248
+222
+266
+Weights of variables
+11
+0.0
+1
+
+TEXTBOX
+354
+69
+504
+87
+Runtime params
+11
+0.0
+1
+
+TEXTBOX
+299
+249
+449
+267
+Output params
+11
+0.0
+1
+
+TEXTBOX
+18
+490
+168
+508
+Economic ABM
+11
+0.0
+1
 
 @#$#@#$#@
 # WHAT IS IT?
@@ -1007,6 +823,19 @@ The growing shape (as a sprawl) will strongly depend on these
 ##Application
 
 
+#Specifications
+
+##Model exploration
+Exploration is not done through BehaviorSpace that is not really practical. Could also use OpenMole but works only for "simple" runs.
+We would like to proceed to customized explorations, that are for most sensitiviy analysis, need sometimes customized functions.
+  -> generic functions for model exploration (that could become utilities later)
+NOTE on format !
+
+Rq: could exploration always be generic and calculation done a posteriori export ? NO in fact since for example with morpho comparison, we need all patch set to compare footprints, what is in fact not reasonably exportable (or could it be ?)
+
+
+
+
 
 # EXTENDING THE MODEL
 
@@ -1016,16 +845,32 @@ The growing shape (as a sprawl) will strongly depend on these
 
 ###Implementation
 
-  - more neighboorhood should not be squared
-  - improve speed of model: heuristic for closest road !
-  - set random seed as an option !!!
+<ul>
+  X more neighboorhood should not be squared OK circular
+  <li> improve speed of model: heuristic for closest road ! </li>
+  <li> set random seed as an option !!!</li>
+  X bugs with death of some houses. NO, houses on links have to die. Should not contruct here in fact. --> that was a useful bug ! :: next issue
+  X not construct on roads and center
+  X should centers be ponctuals or spatial ? -> ponctual OK, will consider as an "activity directive for the area"
+  X pb number of centers ? -> kill footprint calculator !
+
+
+</ul>
 
 ###Results
+
   - classification of shapes: compare to radioconcentrique/ciudad linear
   - revoir application: scale!!! planning of areas and activities
 
+###Exploration/Sensitivity analysis
+  - basic exploration with many reporters and morpho !
+  - exploration with morpho comparison of continuous/sequential
+  - Q of center number/position -> test with many positions for a given number, how quick does the serie converge? If quick enough then compare number of centers.
+
 
 ##Possible future extensions
+
+###From old model
 
 ;;add network auto-evolution :: add paths if not direct (eval all x ticks) ; evolve capacity of paths % density and quantity that goes through.
 
@@ -1033,15 +878,19 @@ The growing shape (as a sprawl) will strongly depend on these
 
 ;; irregular grid?? // elevation
 
+###New perspectives
+
+
+
 
 # RELATED MODELS
 
-See Urban suite and Refs.
+See Urban suite integrated in NL and Refs.
 
 # CREDITS AND REFERENCES
 
 ##Conception and implementation:
-Juste Raimbault
+<a href="mailto:juste.raimbault@polytechnique.edu">Juste Raimbault</a>
 Dép HSS, Ecole Polytechnique
 LVMT, Ecole Nationale des Ponts et Chaussées
 

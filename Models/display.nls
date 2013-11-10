@@ -7,6 +7,7 @@ end
 to color-patches
   let mi min [value] of patches
   let ma max [value] of patches
+  if mi = ma [set ma ma + 1]
   ask patches[set pcolor scale-color yellow  value mi ma]
 end
 
@@ -31,8 +32,6 @@ to display-ABM
   ask houses [set color scale-color blue ([rent] of patch-here) mir mar]
   
   ;;size of people according to wealth
-  let mip min [wealth] of households
-  let maxp max [wealth] of households
-  
+  ;;Ok already done in creation
   
 end

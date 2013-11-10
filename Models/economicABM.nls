@@ -54,10 +54,16 @@ to setup-ABM
   ;;  - corresponding network (i.e. the CA model has already run)
   ;;;;;;;
   
-  setup-vars-ABM
+  reset-ticks
+  
+  ask households [die]
   
   setup-rents
   
+  setup-vars-ABM
+  
+
+  display-ABM
   
 end
 
@@ -73,10 +79,15 @@ to setup-vars-ABM
   ;;for now vars are fixed to avoid overparam
   ;;after brief exploration, should determine which vars have influence on qualitative difference in the outcome
   ;;and set them as sliders ?
-  set rent-update-radius 5
+  ;set rent-update-radius 5
   set mean-economic-value 1
   set sigma-wealth 0.3
-  set move-threshold 1
+  ;set move-threshold 0.5
+  set new-incomers-number 2
+  
+  ;;set lists of houses
+  set available-houses sort-on [[value / rent] of patch-here] (houses)  
+  
 end
 
 
@@ -93,27 +104,44 @@ to go-one-step-ABM
   
   ;;update wealths? Q of the time scale
   ;;do evolve at same speed than rents ?
+  update-wealth
   
   ;;display
   display-ABM
   
+  tick
 end
 
 to move-existing-actors
-  ;;household decide if moves
-  ;;maximize value and maximize (wealth - rent)
-  ;;moves are done in random order, should not have influence
-  
-  ;;rule for movement: economic balance / value > threshold
-  let vmax max [value] of patches
-  let movers households with [(wealth - [rent] of patch-here)* vmax /([value] of patch-here) > move-threshold]
-  
-  
+  if (count households > 0)[
+    ;;update sorted list of houses
+    set available-houses sort-on [[value / rent] of patch-here] (houses)  
+    
+    ;;household decide if moves
+    ;;maximize value and maximize (wealth - rent)
+    ;;moves are done in random order, should not have influence
+    
+    ;;rule for movement: economic balance / value > threshold
+    let vmax max [value] of patches
+    let bmax max [(wealth - [rent] of patch-here)] of households
+    let movers households with [(wealth - [rent] of patch-here) / bmax * vmax /([value] of patch-here) > move-threshold]
+    ask movers [find-house-or-leave]
+  ]
 end
 
 to add-incoming-actors
-  
+  create-households new-incomers-number [
+     set wealth random-normal mean-economic-value sigma-wealth
+     set color red set size (1 + wealth) set shape "person" set hidden? true
+     find-house-or-leave
+  ]
 end
+
+
+to update-wealth
+  ;;no wealth-update for now
+end
+
 
 
 to update-rents
@@ -132,5 +160,29 @@ to update-rents
   ]
   ask patches with [constructed?][set rent next-rent]
 end
+
+
+;;household procedure
+;;finds a new house.
+to find-house-or-leave
+  ;;simplified assumption:
+  ;;if does not find a new place, leaves (die)
+  ;;function is used the same way for new incomers or former inhabitants
+  ifelse (length available-houses > 0)[
+    let newhouse first available-houses
+    set available-houses but-first available-houses
+    move-to newhouse
+  ][
+    if (count houses-here > 0)[
+        set available-houses lput one-of houses-here available-houses
+    ]
+    die
+  ]
+  
+end
+
+
+
+
 
 

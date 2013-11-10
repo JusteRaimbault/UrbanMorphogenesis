@@ -21,3 +21,8 @@ to-report norm-p [p l]
   foreach l [set res res + (? ^ p)]
   report (res / n) ^ (1 / p)
 end
+
+
+
+
+;;concatenation of two listes ? -> sentence does that ! (not recursive)

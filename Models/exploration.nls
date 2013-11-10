@@ -1,0 +1,159 @@
+;;;;;;;;;;;;;;;;;;
+;; Exploration of the model
+;;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;;;;
+;; Need generic functions
+;;  - different function to generate experience plans as list (standardised format)
+;;  - also generic export to scilab and/or R from a generic format of results
+;;
+;; Format will be the simple: list of execs. Exec = list of attribution. Attribution = couple (param_name,param_value)
+;;     Q : Does a std XML spec exists for description of such experience plans ??? That should also be something to put in Todos
+;;
+;;;;;;;;;;;;;;;;
+
+
+
+
+
+
+;;;;;;;;;;;;
+;;; simple exploration of influence of continuous / sequential update
+to explore-update-type
+  ;;for many values of the parameter space,
+  ;;generate shape with two extreme cases (continuous and sequential updates)
+  ;;evaluate differences quantitatively -> how ?
+  ;; -> symmetric difference to quantify, should be reasonable
+  
+  
+  
+end
+
+
+
+
+;;;;;;;;;;;;
+;; Test of distribution of outputs regarding
+;; random positions of centers
+;; (for robustness)
+;; -> do repetitions in same configuration
+;;;;;;;;;;;;
+to repet-same-conf [n-repets reporter-names output-file]
+  let res []
+  repeat n-repets [
+    let conf []
+    carefully [
+      setup repeat max-ticks [go]
+      foreach reporter-names [set conf lput (list ? (runresult ?)) conf]
+    ][
+      foreach reporter-names [set conf lput (list ? 0) conf]
+    ]
+    set res lput conf res
+  ]
+  csv-export res ";" output-file
+end
+
+to robustness-center-positions
+  repet-same-conf 20 ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-density" "eval-activities"] "../Results/Robustness/20repets.csv"
+end
+
+
+
+
+;;;;;;
+;; Basic grid exploration of the parameter space
+;; given param names and wanted reporters
+;; should be used wisely since the complexity is exponential in the
+;; number of parameters
+to grid-exploration [param-names-and-bounds reporter-names output-file]
+  let plan grid-experience-plan param-names-and-bounds
+  let res []
+  foreach plan [
+    let conf ?
+    carefully [
+      ;;sets vars
+      foreach ? [run (word word word "set " (first ?) " " (last ?))]
+      setup repeat max-ticks [go]
+      ;foreach param-names-and-bounds [let name first ? set conf lput (list name (runresult name)) conf]
+      foreach reporter-names [set conf lput (list ? (runresult ?)) conf]
+    ][
+      foreach reporter-names [set conf lput (list ? 0) conf]
+    ]
+    set res lput conf res
+  ]
+  csv-export res ";" output-file
+end
+
+to launch-grid
+  ;grid-exploration [["distance-to-activities-coefficient" 0 1 0.2]["density-coefficient" 0 1 0.2]["distance-to-center-coefficient" 0 1 0.2]["distance-to-roads-coefficient" 0 1 0.2]] ["eval-density" "spatial-autocorrelation-index"] "../Results/GridExploration/test.csv"
+  grid-exploration [["distance-to-activities-coefficient" 1 1 1]] ["eval-density" "spatial-autocorrelation-index"] "../Results/GridExploration/test.csv"
+end
+
+;;;;;;;;;;;;;;
+;; Creation of experience plans
+;;;;;;;;;;;;;;
+
+;;from variables names, bounds and steps, reports experience plan under std format
+to-report grid-experience-plan [variables]
+  ;;[name,min,max,step]
+  ;;let do it the "recursive-look-like" way, will be simpler to write ?
+  ;;beware, need to iterate on sg, so double list here ! (logical regarding homogeneity!)
+  let experience-plan [[]]
+  foreach variables [
+    set experience-plan extend-plan ? experience-plan
+  ]
+  
+  ;;remove null plan !
+  foreach experience-plan [if null-plan? ? [set experience-plan remove ? experience-plan]]
+  
+  report experience-plan
+end
+
+;;"recursive-look-like" aux -> makes product of existing plan with new variable
+to-report extend-plan [variable old-plan]
+   let name item 0 variable let mi item 1 variable let ma item 2 variable let step item 3 variable
+   let res []
+   foreach old-plan [
+      let curval mi
+      repeat floor ((ma - mi)/ step) + 1 [
+         set res lput (sentence ? (list (list name curval))) res
+         set curval curval + step
+      ]
+   ]
+   report res
+end
+
+to-report null-plan? [conf]
+  let res true foreach conf [set res (res and (last ? = 0))] report res
+end
+
+
+;;;;;;;;;;;;;;;;
+;; export
+;;;;;;;;;;;;;;;
+
+;;format for values of outputs and params will be the same as for only params !
+to csv-export [config separator filename]
+  ;;first get name of vars to write first line
+  ;;rq: we suppose that export is done in same order !!!
+  let first-line ""
+  foreach first config [set first-line word first-line first ? if ? != last first config [set first-line word first-line separator]]
+  print-in-file filename first-line
+  foreach config [
+    let line ""
+    let lst last ?
+    foreach ? [set line word line last ? if ? != lst [set line word line separator]]
+    print-in-file filename line
+  ] 
+end
+
+
+
+
+
+
+
+
+
+
+
