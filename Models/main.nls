@@ -95,7 +95,11 @@ end
 
 
 to update-vars
-    ask patches [set pdensity density set pdistance-to-roads distance-to-roads set pdistance-to-centre distance-to-centre set pdistance-to-activities distance-to-activities]
+    ask patches [
+      set pdensity density set pdistance-to-roads distance-to-roads
+      set pdistance-to-centre distance-to-centre set pdistance-to-activities distance-to-activities
+      set pspeed-from-patch speed-from-patch
+    ]
     set density-max max [pdensity] of patches
     set density-min min [pdensity] of patches
     set distance-to-roads-max max [pdistance-to-roads] of patches

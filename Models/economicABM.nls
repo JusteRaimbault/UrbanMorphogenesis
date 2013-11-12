@@ -70,6 +70,9 @@ end
 to setup-rents
   ;;uniform distribution of rents at the beginning ?
   ;; -> could be interesting to already associate rents to absolute values
+  
+  ;;beware, mean-ec-value has to be initialized here !
+  set mean-economic-value 1
   ask patches with [constructed?][
     set rent mean-economic-value 
   ]
@@ -80,7 +83,6 @@ to setup-vars-ABM
   ;;after brief exploration, should determine which vars have influence on qualitative difference in the outcome
   ;;and set them as sliders ?
   ;set rent-update-radius 5
-  set mean-economic-value 1
   set sigma-wealth 0.3
   ;set move-threshold 0.5
   set new-incomers-number 2
@@ -132,7 +134,7 @@ end
 to add-incoming-actors
   create-households new-incomers-number [
      set wealth random-normal mean-economic-value sigma-wealth
-     set color red set size (1 + wealth) set shape "person" set hidden? true
+     set color red set size (1 + wealth) set shape "person" set hidden? false
      find-house-or-leave
   ]
 end

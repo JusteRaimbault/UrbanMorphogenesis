@@ -17,7 +17,7 @@
 
 
 
-extensions[nw table profiler]
+extensions[nw table gis profiler]
 
 
 __includes[
@@ -70,6 +70,13 @@ globals[
   ;distance-to-activities-coefficient
   ;density-coefficient
   ;distance-to-roads-coeficient
+  
+  
+  ;;;;;;;;;;;;;;
+  ;; GIS Configuration
+  ;;;;;;;;;;;;;;
+  centers-gis-layer
+  paths-gis-layer
   
   
   ;;;;;;;;;;;;;
@@ -215,10 +222,10 @@ ticks
 30.0
 
 SLIDER
-11
-14
-103
-47
+9
+27
+101
+60
 psize
 psize
 1
@@ -230,10 +237,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-9
-49
-104
-82
+7
+62
+102
+95
 worldwidth
 worldwidth
 1
@@ -245,10 +252,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-9
-84
-105
-117
+7
+97
+103
+130
 worldheight
 worldheight
 1
@@ -277,10 +284,10 @@ NIL
 1
 
 SLIDER
-8
-119
-127
-152
+6
+132
+125
+165
 centers-number
 centers-number
 1
@@ -375,7 +382,7 @@ built-cells-per-tick
 built-cells-per-tick
 0
 100
-15
+20
 1
 1
 NIL
@@ -441,10 +448,10 @@ PENS
 "pen-2" 1.0 0 -2674135 true "" "plot min [value] of patches"
 
 SLIDER
-8
-153
-127
-186
+6
+166
+125
+199
 activities-number
 activities-number
 0
@@ -506,10 +513,10 @@ PENS
 "pen-2" 1.0 0 -14985354 true "" "plot profiler:inclusive-time \"go\" / 1000"
 
 SWITCH
-109
-50
-255
-83
+107
+63
+248
+96
 config-from-file?
 config-from-file?
 1
@@ -532,10 +539,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-106
-16
-198
-49
+104
+29
+196
+62
 max-ticks
 max-ticks
 1
@@ -547,10 +554,10 @@ NIL
 HORIZONTAL
 
 SWITCH
-108
-84
-231
-117
+1
+200
+124
+233
 config-comparison?
 config-comparison?
 1
@@ -598,7 +605,7 @@ NIL
 0.0
 10.0
 0.0
-1.0
+0.1
 true
 false
 "" ""
@@ -670,7 +677,7 @@ move-threshold
 move-threshold
 0
 1
-0.9
+0.7
 0.1
 1
 NIL
@@ -685,7 +692,7 @@ rent-update-radius
 rent-update-radius
 0
 30
-5
+10
 1
 1
 NIL
@@ -697,7 +704,7 @@ BUTTON
 340
 59
 clear
-ask houses [die]\nask intersections [die] ask links [die]\nask one-of centres [create-path-with one-of other centres [new-path]]\nask patches [set constructed? false set constructible? true]\nask links [foreach footprint [ask ? [set constructible? false]]]
+clear
 NIL
 1
 T
@@ -799,6 +806,28 @@ Economic ABM
 0.0
 1
 
+INPUTBOX
+126
+97
+255
+157
+centers-gis-layer-path
+../Data/testCenters.shp
+1
+0
+String
+
+INPUTBOX
+126
+158
+255
+218
+paths-gis-layer-path
+../Data/testPaths.shp
+1
+0
+String
+
 @#$#@#$#@
 # WHAT IS IT?
 
@@ -853,6 +882,9 @@ Rq: could exploration always be generic and calculation done a posteriori export
   X not construct on roads and center
   X should centers be ponctuals or spatial ? -> ponctual OK, will consider as an "activity directive for the area"
   X pb number of centers ? -> kill footprint calculator !
+  <li>Setup from gis files (centers and roads !) -> for applications, on real conf !</li>
+  <li>Should be logic to have an external explicative variable coming from raster GIS file (what would be like elevation etc: pre-existing value)</li>
+  <li>ABM: justify convergence and find reasonable outputs. eg time serie of rents distrib (mean,sigma to begin)</li>
 
 
 </ul>
@@ -864,8 +896,11 @@ Rq: could exploration always be generic and calculation done a posteriori export
 
 ###Exploration/Sensitivity analysis
   - basic exploration with many reporters and morpho !
-  - exploration with morpho comparison of continuous/sequential
+  - exploration with morpho comparison of continuous/sequential. When looking at shapes obtained for different values, evoques that this parameter should in fact have a strong significance. Ex high value gives a very dense city. (logical)
+Look at sensitivity of output regarding this parameter.
+
   - Q of center number/position -> test with many positions for a given number, how quick does the serie converge? If quick enough then compare number of centers.
+--> execution on different conf and different number of centers, with large number (500 should be fine)
 
 
 ##Possible future extensions

@@ -1,6 +1,7 @@
 to display-CA
   color-patches
   color-paths
+  color-centres
 end
 
 
@@ -16,6 +17,9 @@ to color-paths
   ask houses [set hidden? false]
 end
 
+to color-centres
+  ask centres [set color activity * 130 / activities-number]
+end
 
 
 

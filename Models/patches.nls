@@ -2,18 +2,6 @@
 ;;descriptives variables : cells variables
   
 to-report density
-;let s 0 let x pxcor let y pycor let i (- neighborhood-radius) let j (- neighborhood-radius)
-;repeat (2 * neighborhood-radius + 1) [
-;   set j (- neighborhood-radius)
-;   repeat (2 * neighborhood-radius + 1)[
-;     if x + i >= 0 and y + j >= 0 and  x + i <= worldwidth and y + j <= worldheight [
-;       ask patch (x + i) (y + j) [if constructed? [set s s + 1]]
-;     ]
-;     set j j + 1
-;   ]
-;   set i i + 1
-;] 
-;report s / (((2 * neighborhood-radius) + 1) ^ 2)
   ;;two calls to in-radius, may not be so efficient ?
   report count (patches in-radius neighborhood-radius) with [constructed?] / count (patches in-radius neighborhood-radius)
 end

@@ -48,71 +48,114 @@ end
 
 
 to setup-centres
-  ifelse not config-from-file? [create-centres centers-number [ set shape "circle" set size 1 set color red setxy random world-width random world-height]]
-  [let pos "" ifelse not config-comparison? [set pos user-new-file][set pos "/Users/Juste/Documents/Complex Systems/ProjetUrbanFramework/Models/Activities/atlantis.txt"]
-   if pos != false [
-     file-open pos
-     let c file-read-line ; explanation line
-     let n 0
-     while [not file-at-end?][
-       let s file-read-line ;comment line
-       let x read-from-string file-read-line
-       let y read-from-string file-read-line
-       let a 0
-       if not config-comparison? [set a read-from-string file-read-line]
-       create-centres 1 [
-         set shape "circle" set size 3 setxy x y 
-         if not config-comparison? [ set color 140 * a / activities-number set activity a]
-         set number n
-         ]
-       set n n + 1
-     ]
-     file-close 
-   ]
+ifelse not config-from-file? [create-centres centers-number [ set shape "circle" set size 1 set color red setxy random world-width random world-height]]
+  [
+    ;;read configuration from GIS files
+    ;;we set also roads here, because need to set
+    ;;the envelope here
+    set centers-gis-layer gis:load-dataset centers-gis-layer-path
+    set paths-gis-layer gis:load-dataset paths-gis-layer-path
+    gis:set-world-envelope map [? + 0.05] gis:envelope-union-of gis:envelope-of centers-gis-layer gis:envelope-of paths-gis-layer
+    
+    foreach gis:feature-list-of centers-gis-layer [
+       foreach gis:vertex-lists-of ? [
+          let loc gis:location-of first ?
+          ;let act gis:property-value first ? "activity"
+          create-centres 1 [
+              set shape "circle" set size 1 set activity 1 setxy first loc last loc
+              ;color set later because don't know yet number of activities
+          ]
+       ]
     ]
+    
+    set activities-number max [activity] of centres + 1
+    ask centres [set color activity * 130 / activities-number]
+    
+    ;;setup network.
+    ;;not so evident, have to grip extremity from location of extremities of a line
+    ;;implying an equality threshold, could because a problem in "fine" configurations
+    ;;must care to have very small threshold,
+    ;;avoiding however non-connexity that is a real issue (NOT authorised)
+    foreach gis:feature-list-of paths-gis-layer [
+      foreach gis:vertex-lists-of ? [
+         let current-vertex gis:location-of first ?
+         foreach but-first ? [
+            let next-vertex gis:location-of ?
+            let next-extr extremity-intersection-of-gis-feature next-vertex
+            ask extremity-intersection-of-gis-feature current-vertex [
+              create-path-with next-extr [
+                 new-path
+              ]
+            ]
+            set current-vertex next-vertex
+         ]
+      ]
+    ]
+    
+]
   
-  ask centres [create-paths-with ((other centres) with-min [distance myself]) with [not path-neighbor? myself][new-path]]
 end
 
 
+to-report extremity-intersection-of-gis-feature [feature-location]
+  ;;reports new or existing intersection corresponding 
+  ;;arg is a location
+  let res nobody
+  let x first feature-location let y last feature-location
+  create-intersections 1 [
+    setxy x y
+    let candidates-centers centres in-radius 0.1
+    let candidates-inters intersections in-radius 0.1
+    if count candidates-inters > 0 [set res one-of candidates-inters]
+    ifelse count candidates-centers > 0 [
+      set res one-of candidates-centers
+    ][
+      hatch 1 [setxy x y set res self set hidden? true]
+    ]
+    if count candidates-inters > 0 or count candidates-centers > 0 [
+      die 
+    ]
+  ] 
+  report res
+end
 
 
 
 ;;setup function
 ;;built core structure with centers
 to setup-network
-    
-  ;;connect weak-components
-  let clusters []
-  while [length clusters = 0 or length clusters > 2] [
-     nw:set-snapshot turtles links
-     set clusters nw:weak-component-clusters
-     ;take one cluster, connects with the closest
-     let c1 first sort-by [([pxcor] of first ?1 < [pxcor] of first ?2) or (([pxcor] of first ?1 = [pxcor] of first ?2) and ([pycor] of first ?1 < [pycor] of first ?2))] (map [sort-by [([pxcor] of ?1 < [pxcor] of ?2) or (([pxcor] of ?1 = [pxcor] of ?2) and ([pycor] of ?1 < [pycor] of ?2))] ?] clusters)
-     let dmin dmax let tmin1 one-of turtles let tmin2 one-of turtles
-     foreach clusters[
-       ;fucking netlogo hardcore with implicit pointers
-       let aux remove 0 c1
-       foreach ? [set aux remove ? aux]
-         if  not empty? aux [
-           let d dmax let t1 one-of c1 let t2 one-of ?
-           foreach ? [
-             let t ?
-             foreach c1 [
-               ask ? [if distance t < d [set d distance t set t1 self set t2 t]] 
-             ]
-           ]
-           show d
-           if d < dmin [set dmin d set tmin1 t1 set tmin2 t2]
-         ]
-     ]
-     
-     ;;not proved totally yet : sometimes tmin1 = tmin2, why?
-     
-     if tmin1 != tmin2 [
-       ask tmin1 [create-path-with tmin2 [new-path]]
-     ]
-     
+  ;;minimal network if not config-from-file
+  if not config-from-file? [
+    ask centres [create-paths-with ((other centres) with-min [distance myself]) with [not path-neighbor? myself][new-path]]
+    let clusters []
+    while [length clusters = 0 or length clusters > 2] [
+      nw:set-snapshot turtles links
+      set clusters nw:weak-component-clusters
+      ;take one cluster, connects with the closest
+      let c1 first sort-by [([pxcor] of first ?1 < [pxcor] of first ?2) or (([pxcor] of first ?1 = [pxcor] of first ?2) and ([pycor] of first ?1 < [pycor] of first ?2))] (map [sort-by [([pxcor] of ?1 < [pxcor] of ?2) or (([pxcor] of ?1 = [pxcor] of ?2) and ([pycor] of ?1 < [pycor] of ?2))] ?] clusters)
+      let dmin dmax let tmin1 one-of turtles let tmin2 one-of turtles
+      foreach clusters[
+        ;fucking netlogo hardcore with implicit pointers
+        let aux remove 0 c1
+        foreach ? [set aux remove ? aux]
+        if  not empty? aux [
+          let d dmax let t1 one-of c1 let t2 one-of ?
+          foreach ? [
+            let t ?
+            foreach c1 [
+              ask ? [if distance t < d [set d distance t set t1 self set t2 t]] 
+            ]
+          ]
+          show d
+          if d < dmin [set dmin d set tmin1 t1 set tmin2 t2]
+        ]
+      ]
+      
+      if tmin1 != tmin2 [
+        ask tmin1 [create-path-with tmin2 [new-path]]
+      ]
+      
+    ]
   ]
 end
 
@@ -136,7 +179,7 @@ to setup-center-activities
       ] 
       set a a + 1
     ]
-    ask centres [set color activity * 130 / activities-number show activity]
+    ask centres [set color activity * 130 / activities-number]
   ]
 end
 
@@ -146,6 +189,22 @@ to setup-reporters
   set moran-populations table:make
   set moran-grid-size floor (world-width / 10) ;;good compromise regarding complexity ?
 end
+
+
+;;clear agents but keep world configuration
+;;for exploration purposes
+to clear
+  ask houses [die]
+  ask intersections [die] ask links [die]
+  ask one-of centres [create-path-with one-of other centres [new-path]]
+  ask patches [set constructed? false set constructible? true]
+  ask links [foreach footprint [ask ? [set constructible? false]]]  
+end
+
+
+
+
+
 
 
 
