@@ -52,6 +52,7 @@ end
 to grid-exploration [n-repets param-names-and-bounds reporter-names output-file]
   let plan grid-experience-plan param-names-and-bounds
   let res []
+  let i 0
   foreach plan [
     ;;we insert in res for each repet, stat treatment will be done in external app
     repeat n-repets [
@@ -67,13 +68,15 @@ to grid-exploration [n-repets param-names-and-bounds reporter-names output-file]
       ]
       set res lput conf res
     ]
+    show word "Completed " (100 * i / length plan)
+    set i i + 1
   ]
   csv-export res ";" output-file
 end
 
 to launch-grid
-  ;grid-exploration [["distance-to-activities-coefficient" 0 1 0.2]["density-coefficient" 0 1 0.2]["distance-to-center-coefficient" 0 1 0.2]["distance-to-roads-coefficient" 0 1 0.2]] ["eval-density" "spatial-autocorrelation-index"] "../Results/GridExploration/test.csv"
-  grid-exploration 5 [["distance-to-activities-coefficient" 1 1 1]] ["eval-density" "spatial-autocorrelation-index"] "../Results/GridExploration/testRepets.csv"
+  grid-exploration 3 [["distance-to-activities-coefficient" 0 1 0.2]["density-coefficient" 0 1 0.2]["distance-to-center-coefficient" 0 1 0.2]["distance-to-roads-coefficient" 0 1 0.2]] ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-density" "eval-activities"] "../Results/GridExploration/grid.csv"
+  ;grid-exploration 5 [["distance-to-activities-coefficient" 1 1 1]] ["eval-density" "spatial-autocorrelation-index"] "../Results/GridExploration/testRepets.csv"
 end
 
 
@@ -93,6 +96,7 @@ to explore-update-type [n-repets houses-number seq-houses-per-tick param-names-a
   ;; output : (density_local,Moran,number==density_global)
   let plan grid-experience-plan param-names-and-bounds
   let res []
+  let i 0
   foreach plan [
     repeat n-repets [
       ;;export of 2 different confs for both values
@@ -133,7 +137,8 @@ to explore-update-type [n-repets houses-number seq-houses-per-tick param-names-a
         set confcont lput (list "global-density-diff" global-density) confcont
         set confseq lput (list "eval-density-diff" eval-density) confseq
         set confseq lput (list "moran-diff" spatial-autocorrelation-index) confseq    
-        set confseq lput (list "global-density-diff" global-density) confseq                       
+        set confseq lput (list "global-density-diff" global-density) confseq      
+        
       ][
         set confcont lput (list "eval-density-diff" 0) confcont
         set confcont lput (list "moran-diff" 0) confcont 
@@ -142,18 +147,22 @@ to explore-update-type [n-repets houses-number seq-houses-per-tick param-names-a
         set confseq lput (list "moran-diff" 0) confseq 
         set confseq lput (list "global-density-diff" 0) confseq
         foreach reporter-names [set confcont lput (list ? 0) confcont]
-        foreach reporter-names [set confseq lput (list ? 0) confseq]                     
+        foreach reporter-names [set confseq lput (list ? 0) confseq]    
+                
+        show error-message                                  
       ]
       set res lput confseq (lput confcont res)
+
     ]
+    show word (100 * i / length plan) "%" set i i + 1
   ]
   csv-export res ";" output-file 
 end
 
 to launch-explore-update-type
-  ;explore-update-type 3 100 20
- ;[["distance-to-activities-coefficient" 0 1 0.5]["distance-to-centre-coefficient" 0 1 0.5]["density-coefficient" 0 1 0.5]["distance-to-roads-coefficient" 0 1 0.5]] 
-    ;["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-density" "eval-activities"] "../Results/UpdateType/100houses.csv"
+  explore-update-type 3 100 20
+ [["distance-to-activities-coefficient" 0 1 0.2]["distance-to-center-coefficient" 0 1 0.2]["density-coefficient" 0 1 0.2]["distance-to-roads-coefficient" 0 1 0.2]] 
+    ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-density" "eval-activities"] "../Results/UpdateType/100houses.csv"
 ;    explore-update-type 3 100 20
 ; [["distance-to-activities-coefficient" 1 1 1]] 
 ;    ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-density" "eval-activities"] "../Results/UpdateType/test.csv"

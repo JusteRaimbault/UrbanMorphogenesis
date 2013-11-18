@@ -23,8 +23,6 @@ to compare-activities-configurations
       let conf 0
       foreach ? [ask centres with [number = n] [set activity ? set color 140 * ? / activities-number] set n n + 1 set conf (10 * conf) + ?]
       
-      ;ask centres [show word "number" number show word "activity" activity]
-      
       
       ;;generate urban shape
       while [ ticks < max-ticks ][
@@ -48,15 +46,20 @@ to compare-activities-configurations
 
 end
 
+
+
+;;generates possibles configurations for centres with not fixed activity, ie with activity != 0
+;;configuration will apply corresponding to numerotation
 to-report generate-configs-list
-  let res aux-arborescent [[0]]
+  let res aux-arborescent [[]]
   foreach res [
     if not member? 1 ? or not member? 2 ? [set res remove ? res] 
   ]
   report res
 end
 
+;;auxiliary recursive function
 to-report aux-arborescent [lists]
-  ifelse length first lists = count centres [report lists]
+  ifelse length first lists = (count centres) - (count centres with [activity = 0]) [report lists]
   [report sentence aux-arborescent map [lput 1 ?] lists aux-arborescent map [lput 2 ?] lists]
 end

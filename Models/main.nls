@@ -15,10 +15,10 @@ to go
   ;;build new houses and roads
   sprawl  
 
-  
+  ;;display
   display-CA
   
-  
+  ;;tick
   tick
 end
 
@@ -36,10 +36,7 @@ to sprawl
       ]
       [
         
-        let mx pxcor
-        let my pycor
-        ;let nearest-path first sort-on [distance-to-point mx my] paths
-        ;let nearest-path one-of (paths with-min [distance-to-point mx my])
+        let mx pxcor let my pycor
         let nearest-path nearest-link
         
         let inter one-of turtles
@@ -140,12 +137,17 @@ end
 
 
 
+;;;;;;;;;;;;;;;;;;
+;; Constructors for main agents
+;;;;;;;;;;;;;;;;;;;
 
+;;path
 to new-path
   set color red set thickness 0.3
   set path-length path-length
 end
 
+;;house
 to new-house set shape "house" set size 1 set color blue end
 
 

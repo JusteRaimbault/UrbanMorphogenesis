@@ -1,0 +1,40 @@
+
+
+======================
+== Final reports essential points and ideas
+======================
+
+
+==Intro==
+Cite recent papers ?
+Reviews of possible applications.
+
+
+==Description==
+Be concise.
+output described here ?
+
+-> quid of the economical ABM ?
+
+insert descriptive chart !
+
+==Results==
+
+- reproduce concentric/linear/etc cities (cit cours de Mangin ou bien Corbu)
+-> observe that although structures may have been planned at local (or "global") scale, it is in great part "self organised"
+Q of the scale of th emodel? of work at this scale, houses are not houses
+But in application, more local scale !
+Discuss on that
+
+
+==Discussion==
+Q of scale : cit Pumain scale-free, should be ok with results.
+At the instar of Barthelemy, have selected domining processes.
+
+discussion of validity? Reproduction of existing shapes ? ok but should need strong quantification
+
+discussion on application: local scale, does it not neglect too much phenomena economics exchanges etc.
+Cit urban economy as scale-free NW !
+
+
+

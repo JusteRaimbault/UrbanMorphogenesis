@@ -18,7 +18,7 @@ to color-paths
 end
 
 to color-centres
-  ask centres [set color activity * 130 / activities-number]
+  ask centres [set hidden? false set color activity * 130 / activities-number]
 end
 
 

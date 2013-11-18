@@ -1,0 +1,666 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\begin_preamble
+%\usepackage{geometry}[margin=1cm]
+\usepackage{multicol}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Complex Systems Made Simple
+\begin_inset Newline newline
+\end_inset
+
+Project final report
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $\begin{array}{ccc}
+\star &  & \star\\
+ & \star
+\end{array}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+Generative coupled model for Urban configuration optimisation
+\end_layout
+
+\begin_layout Author
+
+\noun on
+Juste Raimbault
+\noun default
+
+\begin_inset Formula $^{1,2}$
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $^{1}$
+\end_inset
+
+Département Humanités et Sciences Sociales, Ecole Polytechnique
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $^{2}$
+\end_inset
+
+LVMT, Ecole Nationale des Ponts et Chaussées
+\end_layout
+
+\begin_layout Abstract
+We describe an hybrid agent-based model coupling a cellular automata and
+ a dynamic network, for the simulation of urban growth.
+ Heterogeneous aspects of urban systems are taken into account in the sense
+ that morphologic structure but also functional properties of the city are
+ implied in the evolution.
+ Classic measures of description and performances for generated configuration
+ are used to classify and explore generated patterns, and we also propose
+ an economic evaluation of the structure using sensitivity of segregation
+ models to spatial configuration.
+ We can apply the model to a real-world situation, proposing an optimisation
+ of the repartition of activities in a zoning context.
+\end_layout
+
+\begin_layout Abstract
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{multicols}{2}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+Recent progress in many discipline linked directly or indirectly to Urban
+ Planning can be interpreted as the development of a 
+\begin_inset Quotes eld
+\end_inset
+
+new urban science
+\begin_inset Quotes erd
+\end_inset
+
+ as 
+\noun on
+Batty
+\noun default
+ stands in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "batty2013new"
+
+\end_inset
+
+.
+ It rassembles
+\end_layout
+
+\begin_layout Section
+Model description
+\end_layout
+
+\begin_layout Standard
+Our model is adapted from the work of 
+\noun on
+Moreno
+\noun default
+ & 
+\shape italic
+al
+\shape default
+.
+ (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "MBB09,moreno2007conception"
+
+\end_inset
+
+), that proposed to integrate network effects in a CA model for modeling
+ urban morphology.
+ Their aim was to test the effects of physical proximity on urban shape,
+ introducing the modeling of urban mobility through a network which evolution
+ is coupled with the evolution of the urban shape.
+ We generalise the model, allowing to take into account functional properties
+ of the urban environment.
+\end_layout
+
+\begin_layout Subsection
+Agents and rules
+\end_layout
+
+\begin_layout Standard
+The world is a square lattice 
+\begin_inset Formula $(P_{i,j})_{1\leq i,j\leq N}$
+\end_inset
+
+ constitued of cells that can be occupied or not (that will be denoted by
+ a function 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\delta(i,j,t)$
+\end_inset
+
+, time being defined on a standard time scale 
+\begin_inset Formula $\mathbb{T}$
+\end_inset
+
+ which definition is introduced in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "golden2012modeling"
+
+\end_inset
+
+, and for which we will take 
+\begin_inset Formula $\tau\mathbb{N}$
+\end_inset
+
+, 
+\begin_inset Formula $\tau>0$
+\end_inset
+
+ to simplify).
+ Among these fixed agents evolves an euclidian network which agents are
+ roads: 
+\begin_inset Formula $N(t)=(V(t),E(t))$
+\end_inset
+
+ whith 
+\begin_inset Formula $V$
+\end_inset
+
+ finite part of the world (set of points).
+ At initial time, no cell is occupied and the initial network is fixed:
+ 
+\begin_inset Formula $N(0)=(V_{0},E_{0})$
+\end_inset
+
+.
+ In order to translate functional mechanisms in the growth of the city,
+ we suppose that a part of initial nodes are city centers 
+\begin_inset Formula $C_{0}$
+\end_inset
+
+ for each an activity is defined by 
+\begin_inset Formula $a:C_{0}\rightarrow[|1;a_{max}|]$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Giving these settings and variables, the evolution of the system for one
+ time step is the following:
+\end_layout
+
+\begin_layout Itemize
+New cell values are calculated
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $N$
+\end_inset
+
+ new cells are built
+\end_layout
+
+\begin_layout Standard
+Note that the process is stochastic since it depends on the random order
+ on which the new cell are built.
+\end_layout
+
+\begin_layout Subsection
+Evaluation functions
+\end_layout
+
+\begin_layout Paragraph
+Morphology
+\end_layout
+
+\begin_layout Standard
+We qualify the morphologic structure of a configuration by projecting on
+ a plan corresponding to the following indicators:
+\end_layout
+
+\begin_layout Itemize
+The integrated local density, calculated by integration with a norm-p of
+ the densities in circular neighborhood of each cell (with same radius parameter
+ as for the run).
+ We have, with 
+\begin_inset Formula $p_{d}\in[1;+\infty[$
+\end_inset
+
+ 
+\begin_inset Formula 
+\[
+D(t)=\left[\frac{1}{\sum_{i,j}\delta(i,j,t)}\cdot\sum_{\delta(i,j,t)\neq0}d(i,j,t)^{p_{d}}\right]^{1/p_{d}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+The Moran index, defined in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "tsai2005quantifying"
+
+\end_inset
+
+ and used a lot in quantitative geography such as in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "lenechet:hal-00696445"
+
+\end_inset
+
+, is used to quantify the polycentric character of the distribution of populated
+ cells.
+\end_layout
+
+\begin_layout Paragraph
+Network performance
+\end_layout
+
+\begin_layout Standard
+Because of the way it evolves, the only loops in the network are the initial
+ ones
+\end_layout
+
+\begin_layout Paragraph
+Functional accessibility
+\end_layout
+
+\begin_layout Paragraph
+Economic performance
+\end_layout
+
+\begin_layout Standard
+It has been shown by 
+\noun on
+Banos
+\noun default
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "banos2012network"
+
+\end_inset
+
+ that the 
+\noun on
+Schelling
+\noun default
+ segregation model, a basic model for socio-economic segregation introduced
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "schelling1969models"
+
+\end_inset
+
+, was highly sensitive to the spatial structure in which one can embed it
+ (the segregation laws are in that case also influenced by spatial proximity).
+ That justify the use of such a model as an evaluation function for the
+ spatial structure regarding 
+\begin_inset Quotes eld
+\end_inset
+
+economic performance
+\begin_inset Quotes erd
+\end_inset
+
+, in the sense of how much does the structure influence segregation.
+ We implement a model for residential dynamics based on the model proposed
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "benenson1998multi"
+
+\end_inset
+
+.
+ The output function is a segregation index calculated on residential patterns
+ obtained from an  
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout Standard
+The model was implemented in NetLogo 5.2 (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "NetLogo"
+
+\end_inset
+
+).
+ Plots and charts are managed with R after export into standardised data
+ (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "R"
+
+\end_inset
+
+).
+ Primary treatment of GIS Data (for most hand vectorization of simple raster
+ data) is handled with QGIS (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "QGIS_software"
+
+\end_inset
+
+).
+ See supplementary material S2 for implementation details needed for exact
+ reproducibility.
+\end_layout
+
+\begin_layout Subsection
+Generation of urban patterns
+\end_layout
+
+\begin_layout Paragraph
+Typical patterns
+\end_layout
+
+\begin_layout Standard
+Different configurations of the weights allow to generate very different
+ structures.
+\end_layout
+
+\begin_layout Paragraph
+Classification of structures
+\end_layout
+
+\begin_layout Subsection
+Sensitivity analysis and exploration of the parameter space
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement t
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Robustness/400repets.pdf
+	scale 20
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Statistical distribution of outputs for equal weights.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph
+Sensitivity to initial conditions
+\end_layout
+
+\begin_layout Standard
+To determine the magnitude of repetitions useful to get meaningful values
+ of output functions and to ensure some validity in the results, it is necessary
+ to investigate the sensitivity of the model to initial conditions of the
+ spatial configuration.
+ Indeed, if the conclusions that can be drawn in a particular case are significa
+ntly modified by small changes in the spatial configuration, one will differentl
+y apply the model than in a case where abstract topology of activities has
+ more influence: one will obviously elaborate totally different exploration
+ heuristics to proceed to optimisation.
+\end_layout
+
+\begin_layout Standard
+Therefore, we launched large number of simulations with same parameter values
+ but different initial configurations, in order to get statistical distributions
+ of outputs at fixed parameters.
+ Standard deviations were calculated for samples of the parameter space
+ (around 20 samples) and the distributions were each time of same amplitude
+ and same deviation.
+ Fig.
+ 3 shows these distributions for the sample corresponding to equal weights
+ to each parameter.
+ Given the numerical values of deviations (each time around 0.1 times the
+ amplitude of the function), we can conclude that outputs are significantly
+ less sensitive to spatial positions than to topology of activities and
+ parameters values (as the exploration of parameter space results show in
+ the following).
+ That justify the small number of repetition needed to have reasonnable
+ values.
+\end_layout
+
+\begin_layout Paragraph
+Sensitivity to update type
+\end_layout
+
+\begin_layout Standard
+The generated structures seem to be quite sensible to the type of update
+ that is done at each time step, i.
+ e.
+ to the number of cells that are built at each time step.
+\end_layout
+
+\begin_layout Paragraph
+Exploration of the parameter space
+\end_layout
+
+\begin_layout Standard
+We explored a grid of the 4-dimensional space of the 
+\begin_inset Quotes eld
+\end_inset
+
+main
+\begin_inset Quotes erd
+\end_inset
+
+ parameters, the relative weights of variables.
+\end_layout
+
+\begin_layout Subsection
+Concrete application
+\end_layout
+
+\begin_layout Standard
+Since we have shown that outputs on which we want to optimise, such as accessibi
+lity to activities or network performance, are significantly more sensible
+ to initial configuration of activities than to spatial distribution, we
+ can apply the model to the optimisation of activities repartition, given
+ an existing spatial structure.
+ That situation can occur in a planning problem, then one has to decide
+ possible landuses of predefined zones.
+\end_layout
+
+\begin_layout Section
+Discussion
+\end_layout
+
+\begin_layout Standard
+The reproduction of existing urban facts (in the sense of the morphological
+ structures) and the possible applications showed that the implemented model
+ may be useful for evidence-based decision-making in urban planning.
+ However, many aspects can be discussed as they raise crucial questions
+ and would need further explorations.
+\end_layout
+
+\begin_layout Section*
+Conclusion
+\end_layout
+
+\begin_layout Section*
+Supplementary materials
+\end_layout
+
+\begin_layout Paragraph
+S1
+\end_layout
+
+\begin_layout Standard
+Description of coupled ABM for economic evaluation.
+\end_layout
+
+\begin_layout Paragraph
+S2
+\end_layout
+
+\begin_layout Standard
+Core source code of the NetLogo implementation of the model, sample of data
+ used for applications, source code for generation of plots and charts.
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Biblio/projetCSMS,/Users/Juste/Documents/ComplexSystems/Biblio/BibTeX/global"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{multicols}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

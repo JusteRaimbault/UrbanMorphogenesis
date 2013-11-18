@@ -3,6 +3,18 @@
 ;;;;;;;;;;;;;;;;
 
 
+;;output value of reporters.
+;;not done in monitors to avoid calculation at each step.
+to calculate-reporters
+  let line ""
+  foreach output-reporter-names [
+    let val (runresult ?)
+    output-print word word ? " = " val
+    set line word line val if ? != last output-reporter-names [set line word line ";"]
+  ]
+  if output-file? [print-in-file output-file-name line]
+end
+
 
 
 ;;speed in network
@@ -13,9 +25,12 @@ end
 
 ;;intergated local density
 to-report eval-density
-  ;; test local density with certain norm on all cells
-    report ((sum [pdensity ^ p-density] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-density )
-
+  ;local density with certain norm on all cells
+  let res 0
+  carefully[
+    set res ((sum [pdensity ^ p-density] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-density )
+  ][output-print error-message]
+  report res
 end
 
 to-report eval-activities

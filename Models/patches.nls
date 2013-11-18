@@ -129,7 +129,6 @@ to-report distance-to-activity [a]
    let d3 0
    ask inter [
      set d3 min list ([item a net-d-to-activities] of e1 + distance e1) ([item a net-d-to-activities] of e2 + distance e2)
-     ;intvalue nw:weighted-distance-to first sort-on [intvalue nw:weighted-distance-to myself "path-length"] (centres with [activity = a]) "path-length"
    ]
    if inter != e1 and inter != e2 [
      ask inter [ask my-paths [die] die]
@@ -142,6 +141,7 @@ to-report distance-to-activity [a]
 end
 
 
+;;test
 to test-distance-to-activity
   let a 0
   repeat activities-number [
@@ -151,7 +151,7 @@ to test-distance-to-activity
 end
 
 
-;;first test with no preferences of patches for given activities : choose max ??
+;;integrated accessibility
 to-report distance-to-activities
   let a 0
   let s 0
@@ -162,7 +162,7 @@ end
 
 
 
-;calculate the patch value thanks to the 3 variables
+;calculate the patch value thanks to the 4 variables
 to-report patch-value
   let c1 density-coefficient let c2 distance-to-roads-coefficient let c3 distance-to-center-coefficient let c4 distance-to-activities-coefficient
   let c c1 + c2 + c3 + c4
@@ -185,6 +185,7 @@ end
 
 
 
+;;local reporter used for integrated speed of the network
 to-report speed-from-patch
   let eucli distance first sort-on [distance myself] centres
   ifelse eucli = 0 [report 1]

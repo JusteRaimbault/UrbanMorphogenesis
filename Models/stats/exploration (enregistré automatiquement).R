@@ -158,57 +158,86 @@ densities <- function(x,y){
 ## Now plot imprint of each type of update
 ####
 
-updatesCoords <- function(paramNames,updateValue,color){
-	x = c();y=c();paramValues = c();nextPar=c();
+updatesCoords <- function(paramNames,updateValue,outParam){
+	x = c();y=c();p=c();paramValues = c();nextPar=c();
 	for(param in paramNames){
 		paramValues=append(paramValues,update[[param]][1])
 		nextPar = append(nextPar,update[[param]][1])
 	}
-	cumd=0;cumm=0;reals=0;
+	cumd=0;cumm=0;cump=0;reals=0;
 	for(i in 1:length(update[["moran.diff"]])){
 		j = 1
 		eq = TRUE
 		if(update[["built.cells.per.tick"]][i]==updateValue){
+	      totalWeight=0
 		  for(param in paramNames){
 			eq = eq&&(update[[param]][i]==paramValues[j])
+			totalWeight = totalWeight + paramValues[j]
 			nextPar[j]=update[[param]][i]
 			j = j + 1
 		  }
 		  #no pb to take the mean since same values
-		  if(eq){cumd=cumd+as.numeric(update[["eval.density"]][i]);cumm=cumm+as.numeric(update[["spatial.autocorrelation.index"]][i]);reals=reals+1}
+		  if(eq){cumd=cumd+as.numeric(update[["eval.density"]][i]);
+		  	cumm=cumm+as.numeric(update[["spatial.autocorrelation.index"]][i]);
+		  	cump=cump+(as.numeric(update[[outParam]][i])/totalWeight);
+		  	reals=reals+1}
 		  #never 0 repets: at least 1!
-		  else{x=append(x,cumd/reals);y=append(y,cumm/reals);
+		  else{x=append(x,cumd/reals);y=append(y,cumm/reals);p=append(p,cump/reals);
 			cumd=as.numeric(update[["eval.density"]][i]);
-			cumm=as.numeric(update[["spatial.autocorrelation.index"]][i]);reals=1}
+			cumm=as.numeric(update[["spatial.autocorrelation.index"]][i]);
+			cump=as.numeric(update[[outParam]][i])/totalWeight;
+			reals=1}
 		  paramValues=nextPar
 		}
 	}
 	
-	dens <- densities(x,y)
-	dens <- floor(99 * dens / max(dens)) + 1
+	#dens <- densities(x,y)
+	#dens <- floor(99 * dens / max(dens)) + 1
 	
 	#compute corresponding color - ok since dens are integers
-	palette = colorRampPalette(c("black", color))(100)
-	col <- palette[dens]
-	return(data.frame(x,y,col))
+	#col <- colorRampPalette(c("black", "red",space = "Lab"))(100)[dens]
+	return(data.frame(x,y,p ^ 1.5))
 }
 
 
-cont <-updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"blue")
-seq <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),20,"green")
+cont <-updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"density.coefficient")
+seq <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),20,"density.coefficient")
 
-plot(cont$x,cont$y,col="blue",
+plot(cont$x,cont$y,col="green",
 xlab="Density",ylab="Moran",main="Morphologic imprints",
-cex=0.5,pch=19
+cex=0.5,pch=1
 )
-points(seq$x,seq$y,col="green",
-cex=0.5,pch=19
+points(seq$x,seq$y,col="blue",
+cex=0.2,pch=19
 )
 
 
-
-
-
+#interesting to look at: how distance to centre influence Morphology
+# //compared to distance to activities :: argument for polycentrism ??
+#beware : color =  relative weight !
+#let plot 4 possible params !
+par(mfcol=c(2,2))
+d <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"density.coefficient")
+plot(d$x,d$y,
+#col=colorRampPalette(c("yellow","black"))(100)[floor(d$p * 100)],
+cex=0.3,pch=19,
+xlab="Density",ylab="Moran",main="Morphological classification"
+)
+d <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"distance.to.activities.coefficient")
+plot(d$x,d$y,col=colorRampPalette(c("yellow","black"))(100)[floor(d$p * 100)],
+cex=0.3,pch=19,
+xlab="Density",ylab="Moran",main="Accessibility influence"
+)
+d <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"distance.to.center.coefficient")
+plot(d$x,d$y,col=colorRampPalette(c("yellow","black"))(100)[floor(d$p * 100)],
+cex=0.3,pch=19,
+xlab="Density",ylab="Moran",main="Centers influence"
+)
+d <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"distance.to.roads.coefficient")
+plot(d$x,d$y,col=colorRampPalette(c("yellow","black"))(100)[floor(d$p * 100)],
+cex=0.3,pch=19,
+xlab="Density",ylab="Moran",main="Roads influence"
+)
 
 
 

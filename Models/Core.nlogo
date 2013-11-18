@@ -121,7 +121,9 @@ globals[
   ;;tracker
   tracker-time
   
-  
+  ;;output-file
+  output-file-name
+  output-reporter-names
   
 ]
 
@@ -176,7 +178,10 @@ centres-own[
   ;;integer representing the activity of the center
   activity 
   
-  ;; is it useful ?
+  ;;The numerotation of centers is used during optimisation configuration
+  ;;to make correspond place in conf to the good center
+  ;;only centers with a!=0 are numeroted
+  ;;because we optimise with a fixed activity
   number
   
   net-d-to-centre
@@ -192,16 +197,15 @@ intersections-own[
 ]
 
 paths-own [path-length]
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 529
 23
-987
-502
+979
+494
 -1
 -1
-8.0
+7.857142857142857
 1
 10
 1
@@ -222,42 +226,12 @@ ticks
 30.0
 
 SLIDER
-9
-27
-101
-60
-psize
-psize
-1
-20
-8
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
 7
-62
+28
 102
-95
+61
 worldwidth
 worldwidth
-1
-200
-55
-1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-7
-97
-103
-130
-worldheight
-worldheight
 1
 200
 55
@@ -267,9 +241,9 @@ NIL
 HORIZONTAL
 
 BUTTON
-351
+376
 25
-417
+442
 58
 NIL
 setup
@@ -284,15 +258,15 @@ NIL
 1
 
 SLIDER
-6
-132
-125
-165
+5
+63
+142
+96
 centers-number
 centers-number
 1
 20
-2
+3
 1
 1
 NIL
@@ -320,9 +294,9 @@ SLIDER
 350
 density-coefficient
 density-coefficient
--1
+0
 1
-1
+0
 0.1
 1
 NIL
@@ -335,9 +309,9 @@ SLIDER
 390
 distance-to-roads-coefficient
 distance-to-roads-coefficient
--1
+0
 1
-1
+0.7
 0.1
 1
 NIL
@@ -350,9 +324,9 @@ SLIDER
 431
 distance-to-center-coefficient
 distance-to-center-coefficient
--1
+0
 1
-1
+0.5
 0.1
 1
 NIL
@@ -389,9 +363,9 @@ NIL
 HORIZONTAL
 
 BUTTON
-424
+449
 25
-487
+512
 58
 go
 go\nset current-time-spent profiler:inclusive-time \"go\"
@@ -449,14 +423,14 @@ PENS
 
 SLIDER
 6
-166
-125
-199
+97
+142
+130
 activities-number
 activities-number
 0
 10
-2
+3
 1
 1
 NIL
@@ -471,7 +445,7 @@ distance-to-activities-coefficient
 distance-to-activities-coefficient
 0
 1
-1
+0
 0.1
 1
 NIL
@@ -513,13 +487,13 @@ PENS
 "pen-2" 1.0 0 -14985354 true "" "plot profiler:inclusive-time \"go\" / 1000"
 
 SWITCH
-107
-63
-248
-96
+5
+166
+146
+199
 config-from-file?
 config-from-file?
-1
+0
 1
 -1000
 
@@ -547,17 +521,17 @@ max-ticks
 max-ticks
 1
 500
-20
+10
 1
 1
 NIL
 HORIZONTAL
 
 SWITCH
-1
-200
-124
-233
+7
+131
+143
+164
 config-comparison?
 config-comparison?
 1
@@ -699,10 +673,10 @@ NIL
 HORIZONTAL
 
 BUTTON
-277
-26
-340
-59
+292
+25
+355
+58
 clear
 clear
 NIL
@@ -807,10 +781,10 @@ Economic ABM
 1
 
 INPUTBOX
-126
-97
-255
-157
+150
+63
+279
+123
 centers-gis-layer-path
 ../Data/testCenters.shp
 1
@@ -818,15 +792,60 @@ centers-gis-layer-path
 String
 
 INPUTBOX
-126
-158
-255
-218
+150
+124
+279
+184
 paths-gis-layer-path
 ../Data/testPaths.shp
 1
 0
 String
+
+OUTPUT
+619
+516
+987
+721
+12
+
+BUTTON
+494
+519
+613
+576
+Calculate reporters
+calculate-reporters
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+SWITCH
+496
+585
+611
+618
+output-file?
+output-file?
+1
+1
+-1000
+
+TEXTBOX
+38
+6
+188
+24
+Setup parameters
+11
+0.0
+1
 
 @#$#@#$#@
 # WHAT IS IT?
@@ -837,19 +856,64 @@ Hybrid model (CA coupled with evolving network) for Urban configuration optimisa
 
 ##Agents and rules
 
+Cells of the automaton (patches) can be occupied or not.
+Evolving network is embedded into space.
+
+At each time step:
+  - N new cells are constructed according to their updated value, that depend on local density, distance to roads, distance to center and accessibility of activities, each weighted according to parameters <code>__-coefficient</code>
+  - network evolves: if a cell is built and network is too far (> fixed param <code>distance-road-needed</code>), it is connected to the network through the shortest path.
+
+Output are not calculated at each time step for efficiency purpose. Button <code>calculate-reporters</code> launch calculation and output in log file if specified.
+
+##Parameters
+
+###Main params
+ - Weights of variables: <code>__-coefficient</code> determine respective weight of each var for its influence in the value of cells, ie in urban dev.
+
+###Runtime params
+have influence on final form but should be fixed in "normal" run, since have good proxies in real world.
+ - <code>distance-road-needed</code> distance over which a new road has to be built for a new cell built
+ - <code>neighborhood-radius</code> radius of neigh for eval of density
+ - <code>built-cells-per-tick</code> number of new houses per tick. Not really real proxy but sensitivity analysis in paper suggest to take compromise ~ 15
+ - <code>activities-norma</code> influence of each respective accessibility in the integrated accessibility. does not change really result, as soon as stays small.
+
+###Output params
+ - <code>p-__</code> value of parameter for p-norm used in integration. between 2 and 5 is a good compromise.
+
+###Setup params
+ - <code>worldwidth</code> world is square, patch size is calculated in function (window of fixed size)
+ - <code>max-ticks</code> param used for run in headless mode, with hand exploration etc.
+ - <code>centers-number, activities-number</code> initial number of centers and activities when setup is random (not setup from file)
+switch for file input and name of GIS input files are used for concrete application.
+
+###Economic ABM
+Hand run of economic eval. see S1 for explanation.
 
 
 ##Evaluation functions
 
+- integrated local density
+- Moran index
+- network integrated speed
+- accessibility of activities
+- economic performance
 
 # HOW TO USE IT
 
 ##Basic use
 
 Set the weights for the influence of the different variables (distance to centres, to activities, density)
-The growing shape (as a sprawl) will strongly depend on these
+The growing shape (as a sprawl) will strongly depend on these.
 
-##Application
+##Explorations and Application
+
+###Exploration
+Launch core functions by hand. See following for specs.
+
+###Application
+Set GIS input file, choose "input from file".
+Launch by hand (compare-activities-configurations).
+Your GIS file has to contain an "activity field", if == 0, will be fixed activity (in general station), exploration is then done on two other possible activities for the other centres.
 
 
 #Specifications
@@ -874,17 +938,19 @@ Rq: could exploration always be generic and calculation done a posteriori export
 
 ###Implementation
 
+dot = TODO, X = done
+
 <ul>
-  X more neighboorhood should not be squared OK circular
-  <li> improve speed of model: heuristic for closest road ! </li>
-  <li> set random seed as an option !!!</li>
-  X bugs with death of some houses. NO, houses on links have to die. Should not contruct here in fact. --> that was a useful bug ! :: next issue
-  X not construct on roads and center
-  X should centers be ponctuals or spatial ? -> ponctual OK, will consider as an "activity directive for the area"
-  X pb number of centers ? -> kill footprint calculator !
-  <li>Setup from gis files (centers and roads !) -> for applications, on real conf !</li>
-  <li>Should be logic to have an external explicative variable coming from raster GIS file (what would be like elevation etc: pre-existing value)</li>
-  <li>ABM: justify convergence and find reasonable outputs. eg time serie of rents distrib (mean,sigma to begin)</li>
+  X more neighboorhood should not be squared OK circular <br/>
+  X improve speed of model: heuristic for closest road ! <br/>
+  X set random seed as an option !!! Do by hand.<br/>
+  X bugs with death of some houses. NO, houses on links have to die. Should not contruct here in fact. --> that was a useful bug ! :: next issue <br/>
+  X not construct on roads and center <br/>
+  X should centers be ponctuals or spatial ? -> ponctual OK, will consider as an "activity directive for the area" <br/>
+  X pb number of centers ? -> kill footprint calculator ! <br/>
+  X Setup from gis files (centers and roads !) -> for applications, on real conf ! <br/>
+  <li>Should be logic to have an external explicative variable coming from raster GIS file (what would be like elevation etc: pre-existing value). Later for further extensions.</li>
+  X ABM: justify convergence and find reasonable outputs. eg time serie of rents distrib (mean,sigma to begin) <br/>
 
 
 </ul>
@@ -915,6 +981,7 @@ Look at sensitivity of output regarding this parameter.
 
 ###New perspectives
 
+See discussion section of paper.
 
 
 
@@ -931,9 +998,7 @@ LVMT, Ecole Nationale des Ponts et Chaussées
 
 ##References
 
-
-Try of quick implantation of the Raumulus Model
-(Diego Moreno, Dominique Badariotti and Arnaud Banos, « Un automate cellulaire pour expérimenter les effets de la proximité dans le processus d’étalement urbain : le modèle Raumulus », Cybergeo : European Journal of Geography)
+See refs in paper.
 @#$#@#$#@
 default
 true
