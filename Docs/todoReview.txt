@@ -1,0 +1,33 @@
+
+=================
+== TODO list
+================
+
+Review, failures and Presentation
+=================================
+
+- histograms for many values of parameters, including economic
+- exploration of economic: plots charts etc
+- relaunch application check value of activities
+- Presentation slides
+- corriger fautes/maladresses
+- format supplementary 2
+- other graph en supplementary ?
+- 
+
+- confidence intervals for nrepets, pvalues on fitted models, sd and ranges on 3d graphs etc :
+more quantify and use stats (everywhere!)
+- exploration of economic: plot n_mvts, segreg_index et wealth dans le temps, regared conv tel que n_mvts est faible!
+- graphe 2d Pareto associé à appli concrete ?
+- headless mode-> useful?
+
+- appli: refaire avec pacti (explicatif) grand parce que veulent toutes! actis
+
+- typo nom police
+- graphe yellow illisible
+- graphes 3D bof
+
+- pb peut etre: explo avec deux centres eulement, application avec plus, peut rendre invalide ! ?
+
+
+

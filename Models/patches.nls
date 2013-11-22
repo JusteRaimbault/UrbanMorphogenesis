@@ -66,12 +66,9 @@ to-report distance-to-centre
    ]
    ask inter [if inter != e1 [create-path-with e1 [new-path]] if inter != e2 [ create-path-with e2 [new-path]]]
    
-   ;nw:set-snapshot turtles paths
-   ;ask paths [set path-length path-length] ; to own the variable
    let d3 0
    ask inter [
      set d3 min list ([net-d-to-centre] of e1 + distance e1) ([net-d-to-centre] of e2 + distance e2)
-     ;intvalue nw:weighted-distance-to first sort-on [intvalue nw:weighted-distance-to myself "path-length"] centres "path-length"
    ]
    if inter != e1 and inter != e2 [
      ask inter [ask my-paths [die] die]
@@ -123,9 +120,6 @@ to-report distance-to-activity [a]
      die
    ]
    ask inter [if inter != e1 [create-path-with e1 [new-path]] if inter != e2 [ create-path-with e2 [new-path]]]
-   
-   nw:set-snapshot turtles paths
-   ask paths [set path-length path-length] ; to own the variable
    let d3 0
    ask inter [
      set d3 min list ([item a net-d-to-activities] of e1 + distance e1) ([item a net-d-to-activities] of e2 + distance e2)

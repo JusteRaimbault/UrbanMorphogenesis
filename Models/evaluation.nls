@@ -115,6 +115,29 @@ end
 
 
 
+;;;;;;;;;;;
+;; economic eval
+;;;;;;;;;;;
+
+;;launches economic ABM and reports segregation index
+to-report eval-economic
+  output-print "Launching economic ABM for segregation index calculation"
+  setup-ABM
+  repeat max-ticks-economic [go-one-step-ABM]
+  report economic-segregation
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

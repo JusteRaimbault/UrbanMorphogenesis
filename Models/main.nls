@@ -111,7 +111,7 @@ end
 to update-network-distances
   ;snapshot of the network
   nw:set-snapshot turtles paths
-  ask paths [set path-length path-length]
+  ask paths [set path-length link-length]
   ask intersections [
      set net-d-to-centre intvalue nw:weighted-distance-to first sort-on [intvalue nw:weighted-distance-to myself "path-length"] centres "path-length"
      let a 0 set net-d-to-activities [] repeat activities-number [set net-d-to-activities lput 0 net-d-to-activities ]

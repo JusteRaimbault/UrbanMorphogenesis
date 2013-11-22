@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>degrees</units>
         <extent>
-            <xmin>1.292113</xmin>
-            <ymin>43.743490</ymin>
-            <xmax>1.488912</xmax>
-            <ymax>43.868089</ymax>
+            <xmin>1.319422</xmin>
+            <ymin>43.756120</ymin>
+            <xmax>1.516221</xmax>
+            <ymax>43.881061</ymax>
         </extent>
         <projections>0</projections>
         <destinationsrs>
@@ -81,7 +81,7 @@
                 <sizescale field=""/>
             </renderer-v2>
             <customproperties/>
-            <displayfield></displayfield>
+            <displayfield>line</displayfield>
             <label>0</label>
             <labelattributes>
                 <label fieldname="" text="Étiquette"/>
@@ -103,9 +103,9 @@
                 <multilineenabled fieldname="" on=""/>
                 <selectedonly on=""/>
             </labelattributes>
-            <editform></editform>
+            <editform>.</editform>
             <editforminit></editforminit>
-            <annotationform></annotationform>
+            <annotationform>.</annotationform>
             <attributeactions/>
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="Point" type="vector" hasScaleBasedVisibilityFlag="0">
@@ -146,7 +146,7 @@
                 <sizescale field=""/>
             </renderer-v2>
             <customproperties/>
-            <displayfield></displayfield>
+            <displayfield>id</displayfield>
             <label>0</label>
             <labelattributes>
                 <label fieldname="" text="Étiquette"/>
@@ -168,9 +168,9 @@
                 <multilineenabled fieldname="" on=""/>
                 <selectedonly on=""/>
             </labelattributes>
-            <editform></editform>
+            <editform>.</editform>
             <editforminit></editforminit>
-            <annotationform></annotationform>
+            <annotationform>.</annotationform>
             <attributeactions/>
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" geometry="Line" type="vector" hasScaleBasedVisibilityFlag="0">
@@ -213,7 +213,7 @@
                 <sizescale field=""/>
             </renderer-v2>
             <customproperties/>
-            <displayfield></displayfield>
+            <displayfield>id</displayfield>
             <label>0</label>
             <labelattributes>
                 <label fieldname="" text="Étiquette"/>
@@ -235,9 +235,9 @@
                 <multilineenabled fieldname="" on=""/>
                 <selectedonly on=""/>
             </labelattributes>
-            <editform></editform>
+            <editform>.</editform>
             <editforminit></editforminit>
-            <annotationform></annotationform>
+            <annotationform>.</annotationform>
             <attributeactions/>
         </maplayer>
     </projectlayers>

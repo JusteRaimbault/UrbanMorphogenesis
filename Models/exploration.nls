@@ -55,6 +55,7 @@ to grid-exploration [n-repets param-names-and-bounds reporter-names output-file]
   let i 0
   foreach plan [
     ;;we insert in res for each repet, stat treatment will be done in external app
+    let j 0
     repeat n-repets [
       let conf ?
       carefully [
@@ -67,6 +68,9 @@ to grid-exploration [n-repets param-names-and-bounds reporter-names output-file]
         foreach reporter-names [set conf lput (list ? 0) conf]
       ]
       set res lput conf res
+      
+      show word "Completed " (100 * ((i + (j / n-repets) )/ length plan))
+      set j j + 1
     ]
     show word "Completed " (100 * i / length plan)
     set i i + 1
@@ -75,7 +79,7 @@ to grid-exploration [n-repets param-names-and-bounds reporter-names output-file]
 end
 
 to launch-grid
-  grid-exploration 3 [["distance-to-activities-coefficient" 0 1 0.2]["density-coefficient" 0 1 0.2]["distance-to-center-coefficient" 0 1 0.2]["distance-to-roads-coefficient" 0 1 0.2]] ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-density" "eval-activities"] "../Results/GridExploration/grid.csv"
+  grid-exploration 500 [["distance-to-activities-coefficient" 0 1 1]["density-coefficient" 0 1 1]["distance-to-center-coefficient" 0 1 1]["distance-to-roads-coefficient" 0 1 1]] ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-density" "eval-activities" "eval-economic"] "../Results/Robustness/500manyparams.csv"
   ;grid-exploration 5 [["distance-to-activities-coefficient" 1 1 1]] ["eval-density" "spatial-autocorrelation-index"] "../Results/GridExploration/testRepets.csv"
 end
 

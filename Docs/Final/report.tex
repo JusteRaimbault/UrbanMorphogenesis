@@ -4,21 +4,18 @@
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
 \usepackage{geometry}
-\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm}
+\geometry{verbose,tmargin=2cm,bmargin=3cm,lmargin=2cm,rmargin=2cm}
 \usepackage{amssymb}
-\usepackage{graphicx}
 
 \makeatletter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
 \newcommand{\noun}[1]{\textsc{#1}}
-%% A simple dot to overcome graphicx limitations
-\newcommand{\lyxdot}{.}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 %\usepackage{geometry}[margin=1cm]
 \usepackage{multicol}
+\usepackage{graphicx}
 
 \makeatother
 
@@ -62,14 +59,28 @@ of the repartition of activities in a zoning context.
 
 Recent progress in many discipline linked directly or indirectly to
 Urban Planning can be interpreted as the development of a ``new urban
-science'' as \noun{Batty} stands in \cite{batty2013new}.
+science'' as \noun{Batty} stands in \cite{batty2013new}. From agent-based
+modeling in quantitative geography, which achievements are reviewed
+in \cite{heppenstall2012agent}, and for which the best example of
+promising results are the series of Simpop models (\cite{pumain2012multi}),
+to other approaches of the field that \noun{Portugali} present as
+``Complexity theories of cities'' (\cite{portugali2012book}) that
+can involve scientists such as physicists as \noun{Haken} on information
+theory (\cite{haken2003face}) or architects as \noun{Hillier} with
+Space Syntax theory (\cite{hillier1976space}), the field is broad
+but is strongly consistent through the common view of urban systems
+as complex systems.
 
 
 \section{Model description}
 
 Our model is adapted from the work of \noun{Moreno} \& \textit{al}.
 (\cite{MBB09,moreno2007conception}), that proposed to integrate network
-effects in a CA model for modeling urban morphology.
+effects in a CA model for modeling urban morphology. Their aim was
+to test the effects of physical proximity on urban shape, introducing
+the modeling of urban mobility through a network which evolution is
+coupled with the evolution of the urban shape. We generalise the model,
+allowing to take into account functional properties of the urban environment.
 
 
 \subsection{Agents and rules}
@@ -112,19 +123,39 @@ radius parameter as for the run). We have, with $p_{d}\in[1;+\infty[$
 D(t)=\left[\frac{1}{\sum_{i,j}\delta(i,j,t)}\cdot\sum_{\delta(i,j,t)\neq0}d(i,j,t)^{p_{d}}\right]^{1/p_{d}}
 \]
 
-\item The Moran index for quantifying the polycentric character of the distribution
+\item The Moran index, defined in \cite{tsai2005quantifying} and used a
+lot in quantitative geography such as in \cite{lenechet:hal-00696445},
+is used to quantify the polycentric character of the distribution
+of populated cells.
 \end{itemize}
 
 \paragraph{Network performance}
 
 Because of the way it evolves, the only loops in the network are the
-initial ones
+initial ones. Therefore, it has no sense to evaluate robustess or
+clustering coefficient of the network. However, since the generated
+network is supposed to simulate the mobility network, we can evaluate
+as suggested in \cite{banos2012towards} its performance through its
+relative speed, i. e. the quantity of detours it obliges to make.
 
 
 \paragraph{Functional accessibility}
 
 
 \paragraph{Economic performance}
+
+It has been shown by \noun{Banos} in \cite{banos2012network} that
+the \noun{Schelling} segregation model, a basic model for socio-economic
+segregation introduced in \cite{schelling1969models}, was highly
+sensitive to the spatial structure in which one can embed it (the
+segregation laws are in that case also influenced by spatial proximity).
+That justify the use of such a model as an evaluation function for
+the spatial structure regarding ``economic performance'', in the
+sense of how much does the structure influence segregation. We implement
+a model for residential dynamics based on the model proposed in \cite{benenson1998multi}.
+The output function is a segregation index calculated on residential
+patterns obtained from a distribution of constructed patches. Detailed
+description of the model is provided in supplementary material S1.
 
 
 \section{Results}
@@ -143,13 +174,17 @@ exact reproducibility.
 \paragraph{Typical patterns}
 
 Different configurations of the weights allow to generate very different
-structure
+structures.
 
 
 \paragraph{Classification of structures}
 
 
 \subsection{Sensitivity analysis and exploration of the parameter space}
+
+\begin{figure}[h] \includegraphics[width=0.3\textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Robustness/400repets}
+\caption{Statistical distribution of outputs for equal weights.}
+\end{figure}
 
 
 \paragraph{Sensitivity to initial conditions}
@@ -167,21 +202,24 @@ exploration heuristics to proceed to optimisation.
 Therefore, we launched large number of simulations with same parameter
 values but different initial configurations, in order to get statistical
 distributions of outputs at fixed parameters. Standard deviations
-were calculated for samples of the parameter space
-
-\begin{figure*}[h]
-\includegraphics[scale=0.4]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Robustness/400repets}\caption{Statistical distribution of outputs for equal weights.}
-
-
-\end{figure*}
-
+were calculated for samples of the parameter space (around 20 samples)
+and the distributions were each time of same amplitude and same deviation.
+Fig. 3 shows these distributions for the sample corresponding to equal
+weights to each parameter. Given the numerical values of deviations
+(each time around 0.1 times the amplitude of the function), we can
+conclude that outputs are significantly less sensitive to spatial
+positions than to topology of activities and parameters values (as
+the exploration of parameter space results show in the following).
+That justify the small number of repetition needed to have reasonnable
+values.
 
 
 \paragraph{Sensitivity to update type}
 
 The generated structures seem to be quite sensible to the type of
 update that is done at each time step, i. e. to the number of cells
-that are built at each time step.
+that are built at each time step. We can explore a grid of the main
+parameter space, 
 
 
 \paragraph{Exploration of the parameter space}
@@ -228,7 +266,7 @@ of data used for applications, source code for generation of plots
 and charts.
 
 \bibliographystyle{plain}
-\bibliography{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Biblio/projetCSMS,/Users/Juste/Documents/ComplexSystems/Biblio/BibTeX/global}
+\bibliography{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Biblio/projetCSMS,/Users/Juste/Documents/ComplexSystems/Biblio/BibTeX/global,/Users/Juste/Documents/ComplexSystems/CCUPD/Biblio/ccupd}
 
 
 \end{multicols}

@@ -25,6 +25,9 @@ to setup-world
   profiler:reset
   profiler:start
   set tracker-time 0
+  
+  ;;check some condition on vars
+  if activities-number > centers-number [set activities-number centers-number]
 end
 
 
@@ -115,16 +118,13 @@ to-report extremity-intersection-of-gis-feature [feature-location]
   let x first feature-location let y last feature-location
   create-intersections 1 [
     setxy x y set hidden? true
-    let candidates-centers centres in-radius 0.1
-    show candidates-centers
+    let candidates-centers centres in-radius 0.3
     let candidates-inters other intersections in-radius 0.3
-    show candidates-inters
     ifelse count candidates-inters > 0 [set res one-of candidates-inters][
       ifelse count candidates-centers > 0 [
         set res one-of candidates-centers
       ][
       set res self
-      ;;hatch 1 [setxy x y set res self set hidden? true]
       ]
     ]
     if count candidates-inters > 0 or count candidates-centers > 0 [
@@ -208,10 +208,9 @@ to setup-reporters
   set moran-grid-size floor (world-width / 10) ;;good compromise regarding complexity ?
   
   ;;setup output file if needed
-  set output-reporter-names  ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities"]
+  set output-reporter-names  ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities" "eval-economic"]
   if output-file?[
     set output-file-name word word "../Logs/" date-and-time ".log"
-    set output-reporter-names  ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities"]
     let first-line ""
     foreach output-reporter-names [set first-line word first-line ? if ? != last output-reporter-names [set first-line word first-line ";"]]
     print-in-file output-file-name first-line

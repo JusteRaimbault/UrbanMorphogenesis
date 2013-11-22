@@ -241,3 +241,25 @@ xlab="Density",ylab="Moran",main="Roads influence"
 
 
 
+#plot for application
+app <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Application/testEconomic.csv",sep=";")
+
+#plot Pareto graph
+plot(app[["eval.economic"]],app[["eval.activities"]]
+,xlab="Economic performance",ylab="Accessibility",main="Pareto plot of configurations"
+)
+
+getInd<-function(id){
+	res = 0
+	for(i in 1:length(app[["id"]])){
+		if(app[["id"]][i]==id) {res = i}
+	}
+	return(res)
+}
+
+#get index of real sit
+r = getInd(121222112)
+#corresponding values
+app[["eval.economic"]][r];app[["eval.activities"]][r];
+
+

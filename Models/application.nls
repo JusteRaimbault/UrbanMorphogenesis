@@ -1,51 +1,50 @@
 
+;;;;;;;;;;;;;;;;;;;
+;; Concrete application of the model
+;;
+;; 1 fixed activity to fixed centers, 2 other activities that we must optimise in the repartition
+;; between other centers
+;;
+;; Uses GIS File
+;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
-
-to compare-activities-configurations
-  
-  let filename word (word "atlantis_" timer) ".sci"
-  file-open filename
-  file-print "d=[];speed=[];config=[];a=[];"
-  file-close
-
-  let ii 1
-
+to compare-activities-configurations [n-repets reporter-names output-file]
+  ;;set boolean vars
   set config-from-file? true
   set config-comparison? true
-
-  foreach generate-configs-list [
-      
-      setup
-      
-      let n 0
-      let conf 0
-      foreach ? [ask centres with [number = n] [set activity ? set color 140 * ? / activities-number] set n n + 1 set conf (10 * conf) + ?]
-      
-      
-      ;;generate urban shape
-      while [ ticks < max-ticks ][
-        go
+  let res []
+  let i 0
+  let configs generate-configs-list
+  foreach configs [   
+      let conf []
+      ;;since position does not change, repet will not really be needed
+      repeat n-repets [
+        carefully [
+          setup         
+          let n 1
+          let id 0
+          foreach ? [ask centres with [number = n] [set activity ? set color 130 * ? / activities-number] set n n + 1 set id ? + (10 * id)]
+          repeat max-ticks[ go ]
+          foreach reporter-names [set conf lput (list ? (runresult ?)) conf]
+          set conf lput (list "id" id) conf
+         ][
+            foreach reporter-names [set conf lput (list ? 0) conf]
+            set conf lput (list "id" 0) conf
+          ]
+          set res lput conf res
       ]
-      
-      update-vars
-      
-      ;;export values in file
-      file-open filename
-      file-print word (word (word (word "d(" ii) ")=") eval-density ) ";"
-      file-print word (word (word (word "speed(" ii) ")=") eval-speed ) ";"
-      file-print word (word (word (word "a(" ii) ")=") eval-activities ) ";"
-      file-print word (word (word (word "conf(" ii) ")=") conf ) ";"
-      file-close
-      
-      
-      set ii (ii + 1)
-
+      show word word "Completed " (100 * i / length configs) " %"
+      set i i + 1 
     ]
-
+    csv-export res ";" output-file
 end
 
+to launch-activities-comparison
+    ;compare-activities-configurations 1 ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities" "eval-economic"] "../Results/Application/atlantis.csv"
+    compare-activities-configurations 1 ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities" "eval-economic"] "../Results/Application/testEconomic.csv"
+end
 
 
 ;;generates possibles configurations for centres with not fixed activity, ie with activity != 0

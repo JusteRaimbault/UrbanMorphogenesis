@@ -20,7 +20,7 @@
 ;; rent-update-radius
 ;   mean-economic-value
 ;   sigma-wealth
-;;  
+;;  max-ticks-economic
 ;;
 ;;
 ;;
@@ -85,10 +85,12 @@ to setup-vars-ABM
   ;set rent-update-radius 5
   set sigma-wealth 0.3
   ;set move-threshold 0.5
-  set new-incomers-number 2
+  set new-incomers-number (count houses / 10)
   
   ;;set lists of houses
   set available-houses sort-on [[value / rent] of patch-here] (houses)  
+  
+  set max-ticks-economic 100
   
 end
 
@@ -117,7 +119,7 @@ end
 to move-existing-actors
   if (count households > 0)[
     ;;update sorted list of houses
-    set available-houses sort-on [[value / rent] of patch-here] (houses)  
+    set available-houses sort-on [[value / rent] of patch-here] (houses with [count households-here = 0])  
     
     ;;household decide if moves
     ;;maximize value and maximize (wealth - rent)
@@ -126,12 +128,14 @@ to move-existing-actors
     ;;rule for movement: economic balance / value > threshold
     let vmax max [value] of patches
     let bmax max [(wealth - [rent] of patch-here)] of households
-    let movers households with [(wealth - [rent] of patch-here) / bmax * vmax /([value] of patch-here) > move-threshold]
+    let movers households with [100 * (wealth - [rent] of patch-here) / bmax * ([value] of patch-here) / vmax < move-threshold]
     ask movers [find-house-or-leave]
   ]
 end
 
 to add-incoming-actors
+  set available-houses sort-on [[value / rent] of patch-here] (houses with [count households-here = 0])  
+  
   create-households new-incomers-number [
      set wealth random-normal mean-economic-value sigma-wealth
      set color red set size (1 + wealth) set shape "person" set hidden? false
@@ -141,7 +145,7 @@ end
 
 
 to update-wealth
-  ;;no wealth-update for now
+  ;;no wealth-update, not the good time scale ?
 end
 
 
@@ -173,6 +177,7 @@ to find-house-or-leave
   ifelse (length available-houses > 0)[
     let newhouse first available-houses
     set available-houses but-first available-houses
+    ;beware, need to update again available houses in next step for incomers !
     move-to newhouse
   ][
     if (count houses-here > 0)[
@@ -182,6 +187,17 @@ to find-house-or-leave
   ]
   
 end
+
+
+;;reporting of economic segregation index
+to-report economic-segregation
+   let totw 0
+   ask households [ask other households [set totw totw + (1 / distance myself)]]
+   let s 0
+   ask households [ ask other households[set s s + (abs ([wealth] of self - [wealth] of myself) / distance myself)]]
+   report 1 / (2 * max [wealth] of households ) * s / totw
+end
+
 
 
 

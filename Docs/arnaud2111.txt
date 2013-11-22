@@ -1,0 +1,60 @@
+
+- nom des distances
+- mieux expliquer coefs pondérations
+- centres stochasticité
+- expression de Moran: cov/var. poids devant, cov/cov après.
+- dire pourquoi C est fixé dès le début.
+- citations ?
+- revue -> fond et forme.
+- canaliser idées dans discussion finale.
+- mieux préciser dès le départ hypothèses.
+
+- regarder Gerry peut être à la place Moran. Résultats étranges.
+- explorer selon taille grille.
+
+-tester moran sans poids; binaire.
+- chaos bof. -> heterogeneity, bruit.
+
+- position des graphiques.
+
+- rappeler la démarche globale: dire ce qu'on veut faire.
+
+- mettre plus l'accent sur vrai résultats: comment autant d'heterogeneité de base
+
+trop orienté informatique.
+pour EPB: questions posées, démarche pour répondre, insister sur résultats à chaque fois.
+
+garder fil directeur.
+ce que chaque nouvelle procédure apporte au global
+
+-verifier cit.
+
+revue aussi Geographical systems.
+
+Olivier Bonain.
+Ifstar (ENSG)
+et Le Nechet.
+
+Besancon (Tannier)
+
+
+====================================
+
+imaginer d'autre types de systèmes
+
+cascade se mettra plus en route
+existence? denité vélo
+
+bof sur comportements avec infos.
+
+regarder choses soimples; faire évoluer vers systèmes embarqués.
+ameliorer capacité anticipation gens en leur donnant info.
+
+bonus pour déposer dans stations vides.
+
+pb avec usagers (plus marketing)
+quelles manettes.
+
+
+
+

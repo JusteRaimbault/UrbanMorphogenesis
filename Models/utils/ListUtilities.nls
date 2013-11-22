@@ -26,3 +26,12 @@ end
 
 
 ;;concatenation of two listes ? -> sentence does that ! (not recursive)
+
+
+
+;;conc of terms in a list
+to-report sentence-list [l]
+  let res ""
+  foreach l [set res word res ?]
+  report res
+end

@@ -93,6 +93,10 @@ globals[
   ;;(efficiency purposes)
   available-houses
   
+  ;;max number of ticks for convergence of economic ABM
+  ;;Has to be fixed by experience !
+  max-ticks-economic
+  
   ;;;;;;;;;;;;;
   ;;globals for other evaluation functions
   ;;;;;;;;;;;;;
@@ -296,7 +300,7 @@ density-coefficient
 density-coefficient
 0
 1
-0
+0.7
 0.1
 1
 NIL
@@ -311,7 +315,7 @@ distance-to-roads-coefficient
 distance-to-roads-coefficient
 0
 1
-0.7
+0
 0.1
 1
 NIL
@@ -326,7 +330,7 @@ distance-to-center-coefficient
 distance-to-center-coefficient
 0
 1
-0.5
+0
 0.1
 1
 NIL
@@ -445,7 +449,7 @@ distance-to-activities-coefficient
 distance-to-activities-coefficient
 0
 1
-0
+1
 0.1
 1
 NIL
@@ -460,7 +464,7 @@ activities-norma
 activities-norma
 -1
 20
-3
+20
 1
 1
 NIL
@@ -493,7 +497,7 @@ SWITCH
 199
 config-from-file?
 config-from-file?
-0
+1
 1
 -1000
 
@@ -651,7 +655,7 @@ move-threshold
 move-threshold
 0
 1
-0.7
+0.2
 0.1
 1
 NIL
@@ -786,7 +790,7 @@ INPUTBOX
 279
 123
 centers-gis-layer-path
-../Data/testCenters.shp
+../Data/antlantisCentersTest.shp
 1
 0
 String
@@ -797,7 +801,7 @@ INPUTBOX
 279
 184
 paths-gis-layer-path
-../Data/testPaths.shp
+../Data/atlantisPaths.shp
 1
 0
 String
@@ -846,6 +850,46 @@ Setup parameters
 11
 0.0
 1
+
+MONITOR
+21
+590
+92
+635
+households
+count households
+17
+1
+11
+
+MONITOR
+94
+590
+172
+635
+avail. houses
+length available-houses
+17
+1
+11
+
+PLOT
+22
+640
+182
+760
+total wealth
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot sum [wealth] of households"
 
 @#$#@#$#@
 # WHAT IS IT?
