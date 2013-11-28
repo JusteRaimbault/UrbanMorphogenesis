@@ -4,9 +4,19 @@
 library(lattice)
 
 
+
+#stats on outputs
+
+dat <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Robustness/500manyparams.csv",sep=";")
+
+#dat$eval.activities <- dat$eval.activities/max(unlist(dat$eval.activities))
+mor <- dat$spatial.autocorrelation.index
+
+
 robustnessPositions <- function(){
-	dat <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Robustness/400repets.csv",sep=";")
-	summary(dat)
+	
+	
+	#summary(dat)
 	par(mfcol=c(2,2),bg="lightyellow")
 	hist(dat$eval.density,breaks=100,xlab="Density",main="")
     hist(dat$spatial.autocorrelation.index,breaks=100,xlab="Moran",main="")
@@ -17,6 +27,62 @@ robustnessPositions <- function(){
 
 robustnessPositions()
 
+histFit <-function(rows,col,xmax,ymax,prop,xlab,colors){
+	#rows in 0:(floor(length(dat[,1])/n_repets)-1)
+  n_repets = 500
+	
+  #plot.new()
+  
+  #par(mfcol=c(1,1))
+  
+  k=1
+  
+	for(i in rows){
+    d = dat[((i * n_repets) + 1):((i+1)*n_repets),col]
+    d = removeOutliers(d,prop)
+    #c = paste("light",colors[k])
+    #if(c=="light red"){c="red3"}
+		h = hist(d,plot=TRUE,breaks=30,
+             xlim=c(0,xmax),ylim=c(0,ymax),
+             add=(i!=rows[1]),col=colors[k],
+             xlab=xlab,main="")
+		K = max(h$counts)
+		curve(K*exp(- ((x - mean(d))^2)/(2*sd(d)^2)),add=TRUE,col=paste("darkred"),n=300,lwd=2)
+		#plot(h$mids,h$counts)
+    k=k+1
+	}
+}
+
+robManyConfs <- function(){ 
+  par(mfcol=c(2,2))
+  histFit(c(1,3,6),5,1,110,0,"Density",c("red3","green","yellow"))
+  histFit(c(1,3,6),6,1,40,0.4,"Moran",c("green","red3","yellow")) 
+  histFit(c(1,3,6),7,2,75,0,"Speed",c("red3","green","yellow")) 
+  histFit(c(1,3,5),9,11,90,0,"Accessibility",c("green","red3","yellow"))
+  
+}
+
+robManyConfs()
+
+removeOutliers<-function(x,prop){
+  if(prop>0){
+    x=x[which(abs(x-mean(x))<sd(x)*prop)]
+  #res = x;num=floor(length(x)*prop)
+  #for(i in 1:num){
+  #  p1 = chisq.out.test(res,opposite=FALSE)$p.value
+  #  p2 = chisq.out.test(res,opposite=TRUE)$p.value
+  #  ma = max(res);mi=min(res);me=mean(res)
+  #  if(abs(ma-me)>abs(mi-me)){if(p1<p2){res=res[!which(res==ma)]}else{res=res[!which(res==mi)]}}
+  #  else{if(p1<p2){res=res[!which(res==mi)]}else{res=res[!which(res==ma)]}}
+  #}
+  }
+  return(x)
+}
+
+
+
+
+#Grid
 
 grid <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/GridExploration/grid.csv",sep=";")
 
@@ -196,10 +262,10 @@ updatesCoords <- function(paramNames,updateValue,outParam){
 	
 	#compute corresponding color - ok since dens are integers
 	#col <- colorRampPalette(c("black", "red",space = "Lab"))(100)[dens]
-	return(data.frame(x,y,p ^ 1.5))
+	return(data.frame(x,y,p))
 }
 
-
+par(mfcol=c(1,1))
 cont <-updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"density.coefficient")
 seq <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),20,"density.coefficient")
 
@@ -217,39 +283,52 @@ cex=0.2,pch=19
 #beware : color =  relative weight !
 #let plot 4 possible params !
 par(mfcol=c(2,2))
+
 d <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"density.coefficient")
-plot(d$x,d$y,
-#col=colorRampPalette(c("yellow","black"))(100)[floor(d$p * 100)],
-cex=0.3,pch=19,
-xlab="Density",ylab="Moran",main="Morphological classification"
+p=d$p[order(d$p,decreasing=TRUE)];x=d$x[order(d$p,decreasing=TRUE)];y=d$y[order(d$p,decreasing=TRUE)]
+plot(x,y,
+col=colorRampPalette(c("yellow","black"))(100)[floor(p * 100)],
+#cex=1+(p),
+pch=3,lwd=2,
+xlab="Density",ylab="Moran",main="Density influence"
 )
+
 d <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"distance.to.activities.coefficient")
-plot(d$x,d$y,col=colorRampPalette(c("yellow","black"))(100)[floor(d$p * 100)],
-cex=0.3,pch=19,
+p=d$p[order(d$p,decreasing=TRUE)];x=d$x[order(d$p,decreasing=TRUE)];y=d$y[order(d$p,decreasing=TRUE)]
+plot(x,y,
+     col=colorRampPalette(c("yellow","black"))(100)[floor(p * 100)],
+     #cex=1+(p),
+     pch=3,lwd=2,
 xlab="Density",ylab="Moran",main="Accessibility influence"
 )
 d <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"distance.to.center.coefficient")
-plot(d$x,d$y,col=colorRampPalette(c("yellow","black"))(100)[floor(d$p * 100)],
-cex=0.3,pch=19,
+p=d$p[order(d$p,decreasing=TRUE)];x=d$x[order(d$p,decreasing=TRUE)];y=d$y[order(d$p,decreasing=TRUE)]
+plot(x,y,
+     col=colorRampPalette(c("yellow","black"))(100)[floor(p * 100)],
+     #cex=1+(p),
+     pch=3,lwd=2,
 xlab="Density",ylab="Moran",main="Centers influence"
 )
 d <- updatesCoords(c("distance.to.activities.coefficient","density.coefficient","distance.to.center.coefficient","distance.to.roads.coefficient"),1,"distance.to.roads.coefficient")
-plot(d$x,d$y,col=colorRampPalette(c("yellow","black"))(100)[floor(d$p * 100)],
-cex=0.3,pch=19,
+p=d$p[order(d$p,decreasing=TRUE)];x=d$x[order(d$p,decreasing=TRUE)];y=d$y[order(d$p,decreasing=TRUE)]
+plot(x,y,
+     col=colorRampPalette(c("yellow","black"))(100)[floor(p * 100)],
+     #cex=1+(p),
+     pch=3,lwd=2,
 xlab="Density",ylab="Moran",main="Roads influence"
 )
 
 
 
 #plot for application
-app <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Application/atlantis.csv",sep=";")
+app <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Application/atlantiscorrect.csv",sep=";")
 
 #plot Pareto graph
 plot(app[["eval.economic"]],app[["eval.activities"]]
 ,xlab="Economic performance",ylab="Accessibility",main="Pareto plot of configurations"
 )
 
-getInd<-function(id){
+getIndById<-function(id){
 	res = 0
 	for(i in 1:length(app[["id"]])){
 		if(app[["id"]][i]==id) {res = i}
@@ -257,9 +336,26 @@ getInd<-function(id){
 	return(res)
 }
 
+getIndByVal<-function(ec,ac){
+	res = c()
+	for(i in 1:length(app[["id"]])){
+		if(app[["eval.economic"]][i]<ec&&app[["eval.activities"]][i]<ac) {res = append(res,app[["id"]][i])}
+	}
+	return(res)
+}
+
+
 #get index of real sit
-r = getInd(121222112)
+r = getIndById(121222112)
 #corresponding values
 app[["eval.economic"]][r];app[["eval.activities"]][r];
+
+#get conf of good sits
+getIndByVal(0.065,0.66)
+#->result 122211112, 221111121
+getIndByVal(0.06,0.725)
+#122111212
+
+
 
 

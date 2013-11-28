@@ -18,9 +18,18 @@ to color-paths
 end
 
 to color-centres
-  ask centres [set hidden? false set color activity * 130 / activities-number]
+  ask centres [
+    set hidden? false set color center-color
+  ]
 end
 
+to-report center-color
+  let c activity * 130 / activities-number
+  if c mod 10 < 2 [
+    set c c + 5 
+  ]
+  report c
+end
 
 
 
@@ -37,5 +46,28 @@ to display-ABM
   
   ;;size of people according to wealth
   ;;Ok already done in creation
+  
+end
+
+
+
+;;;;;;;;;;;;
+;; display plot in the case of an exploration
+;;;;;;;
+
+to plot-pareto-exploration
+  ;;only called from application, so config-comparison always true, no need to check!
+  ;;however, better in the mood of a flexible and multiple coders context !
+  
+  if config-comparison?[ 
+    set-current-plot "pareto"
+    clear-plot
+    set-current-plot-pen "pen"
+    set-plot-pen-mode 2
+    
+    foreach pareto-points [
+      plotxy first ? last ? 
+    ]
+  ]
   
 end

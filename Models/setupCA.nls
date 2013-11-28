@@ -28,6 +28,9 @@ to setup-world
   
   ;;check some condition on vars
   if activities-number > centers-number [set activities-number centers-number]
+  
+  ;;other globals
+  if config-comparison? [set pareto-points []]
 end
 
 
@@ -83,7 +86,7 @@ to setup-centres
     ]
     
     set activities-number max [activity] of centres + 1
-    ask centres [set color activity * 130 / activities-number]
+    ask centres [set color center-color]
     
     ;;setup network.
     ;;not so evident, have to grip extremity from location of extremities of a line
@@ -194,8 +197,29 @@ to setup-center-activities
       ] 
       set a a + 1
     ]
-    ask centres [set color activity * 130 / activities-number]
+    ask centres [set color center-color]
   ]
+  ]
+end
+
+
+;;hand call function to visualize a particular conf
+;;given the formated ID
+;;used to visu back "good" conf
+;;works with id both as string or int
+;;beware to have good size of conf !
+to force-activity-distrib [id]
+  carefully [
+    let conf-list as-char-list int-to-string id
+    foreach sort-on [number] (centres with [number > 0])[
+      ask ? [set activity string-to-int first conf-list set conf-list but-first conf-list]
+    ]
+    color-centres
+  ][
+     ;does not rise exception if size smaller, no pb
+     ;debilou, exception never raised! :p
+     output-print error-message
+     output-print "Wrong size of configuration id"
   ]
 end
 
@@ -205,7 +229,7 @@ end
 to setup-reporters
   ;;settings for moran index
   set moran-populations table:make
-  set moran-grid-size floor (world-width / 10) ;;good compromise regarding complexity ?
+
   
   ;;setup output file if needed
   set output-reporter-names  ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities" "eval-economic"]
@@ -230,7 +254,17 @@ to clear
   setup-network
 end
 
-
+;setup but keeping globals
+to clear-but-globals
+  reset-ticks
+  ask turtles [die]
+  ask intersections [die] ask links [die]
+  setup-centres  
+  setup-network
+  setup-center-activities
+  setup-patches
+  setup-reporters
+end
 
 
 

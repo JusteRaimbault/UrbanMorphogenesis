@@ -34,7 +34,9 @@ to-report eval-density
 end
 
 to-report eval-activities
-    report ((sum [pdistance-to-activities ^ p-activities] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-activities )
+  ;;beware, need to report a relative accessibility -> normalise by max !
+  let m max [pdistance-to-activities ] of patches with [constructed?]
+  report ((sum [(pdistance-to-activities / m) ^ p-activities] of patches with [constructed?]) /(count patches with [constructed?])) ^ (1 / p-activities )
 end
 
 to-report global-eval [varname]
@@ -104,6 +106,15 @@ to-report spatial-autocorrelation-index
 end
 
 to clear-table-moran
+  
+  ;;we set the size of the grid here, since we would like to make some tests regarding size of the grid
+  set moran-grid-size floor (world-width / moran-grid-factor) ;;good compromise regarding complexity ?
+  
+  ;;don't forget to clear the table?
+  ;;-> useful if come from greater num of cells, but not dangerous
+  ;;do it anyway for coding spirit
+  set moran-populations table:make
+  
   let i 0 let j 0
   repeat floor (world-width / moran-grid-size) [
      repeat floor (world-height / moran-grid-size) [
@@ -120,10 +131,15 @@ end
 ;;;;;;;;;;;
 
 ;;launches economic ABM and reports segregation index
+;;would need several repetitions to be more exact !
 to-report eval-economic
   output-print "Launching economic ABM for segregation index calculation"
-  setup-ABM
-  repeat max-ticks-economic [go-one-step-ABM]
+  output-print word n-repets-eco " repetitions"
+  let res 0
+  repeat n-repets-eco [
+    setup-ABM
+    repeat max-ticks-economic [go-one-step-ABM]
+  ]
   report economic-segregation
 end
 

@@ -52,6 +52,7 @@ __includes[
   "utils/LinkUtilities.nls"  
   "utils/SortingUtilities.nls"
   "utils/FileUtilities.nls"
+  "utils/StringUtilities.nls"
 ]
 
 
@@ -115,6 +116,16 @@ globals[
   dmax
   
   
+  ;;;;;;;;;;;;;
+  ;; Globals for exploration of configurations
+  ;;;;;;;;;;;;;
+  
+  ;;current points in the pareto plot
+  ;;initialised and used iff config-comparison? == true
+  pareto-points
+  
+  
+  
   ;;;;;;;;;;;;;;
   ;; Runtime vars
   ;;;;;;;;;;;;;
@@ -128,6 +139,13 @@ globals[
   ;;output-file
   output-file-name
   output-reporter-names
+  
+  ;;monitor economic times series?
+  ;;(used to assess convergence of indicators)
+  ;;gives too huge files ?
+  ;monitor-economic?
+  ;;since monitoring is done inside running of the model, we need a global var for output list
+  current-output-conf-economic
   
 ]
 
@@ -270,7 +288,7 @@ centers-number
 centers-number
 1
 20
-3
+2
 1
 1
 NIL
@@ -300,7 +318,7 @@ density-coefficient
 density-coefficient
 0
 1
-0.7
+1
 0.1
 1
 NIL
@@ -330,7 +348,7 @@ distance-to-center-coefficient
 distance-to-center-coefficient
 0
 1
-0
+1
 0.1
 1
 NIL
@@ -360,7 +378,7 @@ built-cells-per-tick
 built-cells-per-tick
 0
 100
-20
+10
 1
 1
 NIL
@@ -434,7 +452,7 @@ activities-number
 activities-number
 0
 10
-3
+2
 1
 1
 NIL
@@ -449,7 +467,7 @@ distance-to-activities-coefficient
 distance-to-activities-coefficient
 0
 1
-1
+0
 0.1
 1
 NIL
@@ -464,17 +482,17 @@ activities-norma
 activities-norma
 -1
 20
-20
+4
 1
 1
 NIL
 HORIZONTAL
 
 PLOT
-1244
-602
-1404
-722
+864
+505
+1024
+625
 Calc time
 ticks
 time
@@ -502,10 +520,10 @@ config-from-file?
 -1000
 
 SLIDER
-296
-350
-468
-383
+293
+303
+391
+336
 p-speed
 p-speed
 1
@@ -543,10 +561,10 @@ config-comparison?
 -1000
 
 SLIDER
-296
-313
-468
-346
+394
+267
+486
+300
 p-density
 p-density
 1
@@ -558,10 +576,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-296
-276
-468
-309
+293
+267
+391
+300
 p-activities
 p-activities
 1
@@ -655,8 +673,8 @@ move-threshold
 move-threshold
 0
 1
-0.2
-0.1
+0.6
+0.02
 1
 NIL
 HORIZONTAL
@@ -694,10 +712,10 @@ NIL
 1
 
 MONITOR
-1190
-602
-1240
-647
+864
+628
+914
+673
 tracker
 tracker-time * 1000 / (profiler:inclusive-time \"go\")
 5
@@ -807,17 +825,17 @@ paths-gis-layer-path
 String
 
 OUTPUT
-619
-516
-987
-721
+493
+504
+861
+709
 12
 
 BUTTON
-494
-519
-613
-576
+368
+507
+487
+564
 Calculate reporters
 calculate-reporters
 NIL
@@ -831,13 +849,13 @@ NIL
 1
 
 SWITCH
-496
-585
-611
-618
+370
+573
+485
+606
 output-file?
 output-file?
-1
+0
 1
 -1000
 
@@ -874,10 +892,10 @@ length available-houses
 11
 
 PLOT
-22
-640
-182
-760
+2
+638
+162
+758
 total wealth
 NIL
 NIL
@@ -890,6 +908,75 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot sum [wealth] of households"
+
+SLIDER
+394
+303
+505
+336
+moran-grid-factor
+moran-grid-factor
+0
+world-width
+10
+1
+1
+NIL
+HORIZONTAL
+
+SWITCH
+179
+594
+281
+627
+monitor-economic?
+monitor-economic?
+1
+1
+-1000
+
+PLOT
+1109
+503
+1400
+709
+pareto
+economic
+accessibility
+0.0
+1.0
+0.0
+1.0
+false
+false
+"" ""
+PENS
+"pen" 1.0 0 -15575016 true "" ""
+
+TEXTBOX
+1214
+478
+1364
+496
+Exploration
+14
+0.0
+1
+
+SLIDER
+167
+638
+339
+671
+n-repets-eco
+n-repets-eco
+0
+10
+2
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 # WHAT IS IT?
@@ -1011,6 +1098,8 @@ Look at sensitivity of output regarding this parameter.
 
   - Q of center number/position -> test with many positions for a given number, how quick does the serie converge? If quick enough then compare number of centers.
 --> execution on different conf and different number of centers, with large number (500 should be fine)
+
+  - Convergence of economic ABM : could in fact be the motive of an other paper, really sensitive and seems to need a lot of repets to converge given the structure -> would need to explore in more details for establishing number of repet needed
 
 
 ##Possible future extensions

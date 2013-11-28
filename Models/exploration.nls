@@ -243,6 +243,125 @@ end
 
 
 
+;;;;;;;;;;;;;;;
+;; Study of the Moran -> what is the optimal size ?
+;; let try different confs and plot moran(grid-size)
+;;;;;;;;;;;;;;;
+
+
+to plot-moran [n-repets param-names-and-bounds output-file]
+  let plan grid-experience-plan param-names-and-bounds
+  let res []
+  let i 0
+  foreach plan [
+    ;;we insert in res for each repet, stat treatment will be done in external app
+    let j 0
+    repeat n-repets [
+      let conf ?
+      carefully [
+        ;;sets vars
+        foreach ? [run (word word word "set " (first ?) " " (last ?))]
+        setup repeat max-ticks [go]
+        set moran-grid-factor 2
+        repeat (floor (world-width / 2)) - 1 [set conf ? set conf lput (list "moran" spatial-autocorrelation-index) conf set res lput conf res set moran-grid-factor moran-grid-factor + 1]
+      ][
+        set conf lput (list "moran" 0) conf
+        set res lput conf res
+      ]
+
+      
+      show word "Completed " (100 * ((i + (j / n-repets) )/ length plan))
+      set j j + 1
+    ]
+    show word "Completed " (100 * i / length plan)
+    set i i + 1
+  ]
+  csv-export res ";" output-file
+end
+
+to launch-moran-study
+  plot-moran 20 [["distance-to-activities-coefficient" 0 1 1]["density-coefficient" 0 1 1]["distance-to-center-coefficient" 0 1 1]["distance-to-roads-coefficient" 0 1 1]] "../Results/Moran/moran.csv"
+end
+
+
+
+
+;;;;;;;;;;;;;;
+;; Extraction of many time series for assessment of economic ABM convergence
+;; Indicators -> total wealth, mean rent, segregation index ?
+;;
+;; Exploration done on a classic grid ?
+;;
+;;;;;;;;;;;;;;
+
+to plot-economic-time-series [n-repets n-repetseco param-names-and-bounds reporter-names output-file]
+  ;;do we output also classic indicators ? Y not, does not cost so much
+  
+  ;;don't forget to set utility vars
+  set monitor-economic? true
+  set current-output-conf-economic []
+  let res []
+  
+  let plan grid-experience-plan param-names-and-bounds
+
+  let i 0
+  foreach plan [
+    ;;we insert in res for each repet, stat treatment will be done in external app
+    let j 0
+    repeat n-repets [
+      carefully [
+        ;;sets vars
+        foreach ? [run (word word word "set " (first ?) " " (last ?))]
+        
+        ;;generate conf
+        ;;beware of value of max-ticks vars !
+        setup repeat max-ticks [go]
+        
+        repeat n-repetseco [
+          ;do here because of ca in setup
+          set current-output-conf-economic ?
+          
+          ;;run ABM on top of the generated morphological structure
+          ;;monitoring of vars is done inside !
+          setup-ABM
+          repeat max-ticks-economic [go-one-step-ABM]
+          
+          foreach reporter-names [set current-output-conf-economic lput (list ? (runresult ?)) current-output-conf-economic]
+          
+          set res lput current-output-conf-economic res
+        ]
+      ][
+        output-print error-message
+        foreach reporter-names [set current-output-conf-economic lput (list ? 0) current-output-conf-economic]
+        set res lput current-output-conf-economic res
+      ]
+
+      
+      show word "Completed " (100 * ((i + (j / n-repets) )/ length plan))
+      set j j + 1
+    ]
+    show word "Completed " (100 * i / length plan)
+    set i i + 1
+  ]
+  csv-export res ";" output-file
+  
+end
+
+
+to launch-economic-monitoring
+  ;;do not put econ segreg inside reporters !
+  plot-economic-time-series 200 10 [["density-coefficient" 0 1 1]["distance-to-center-coefficient" 0 1 1]] ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities" ] "../Results/Economic/200repets10eco.csv"
+
+
+end
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,36 @@
+
+========
+== Entretien 23/11 :  revue
+=========
+
+ -> bien dans l'ensemble
+
+===========
+Mettre Arnaud et Doursat
+
+Anglais pas très important
+
+Intervalles entier ?
+
+Grosse formule difficile à lire
+-> commenter plus la formule
+
+!!not homogeneous
+
+expliquer pourquoi d_2 does not appear
+
+plots -> instead of color, bigger diameter ?
+
+
+===
+graph 3d
+ expliquer choix des params à chaque graphe.
+
+=====
+Pareto: points plus visibles
+
+
+
+
+
+

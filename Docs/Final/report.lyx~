@@ -7,6 +7,8 @@
 %\usepackage{geometry}[margin=1cm]
 \usepackage{multicol}
 \usepackage{graphicx}
+
+\date{}
 \end_preamble
 \use_default_options true
 \maintain_unincluded_children false
@@ -70,25 +72,6 @@
 \begin_body
 
 \begin_layout Title
-Complex Systems Made Simple
-\begin_inset Newline newline
-\end_inset
-
-Project final report
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\begin{array}{ccc}
-\star &  & \star\\
- & \star
-\end{array}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
 Generative coupled model for Urban configuration optimisation
 \end_layout
 
@@ -109,7 +92,7 @@ Juste Raimbault
 \begin_inset Formula $^{1}$
 \end_inset
 
-Département Humanités et Sciences Sociales, Ecole Polytechnique
+Erasmus Mundus Masters in Complex Systems Science, Ecole Polytechnique ParisTech
 \begin_inset Newline newline
 \end_inset
 
@@ -118,6 +101,140 @@ Département Humanités et Sciences Sociales, Ecole Polytechnique
 \end_inset
 
 LVMT, Ecole Nationale des Ponts et Chaussées
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{array}{ccc}
+\star &  & \star\\
+ & \star
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size large
+\begin_inset space \hfill{}
+\end_inset
+
+
+\size larger
+Fall 2013 Project
+\size large
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\size larger
+Class
+\size large
+: 
+\shape italic
+Complex Systems Made Simple: A Hands-On Exploration of Agent-Based 
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+\size large
+Modeling
+\end_layout
+
+\begin_layout Standard
+
+\size larger
+Instructor
+\size large
+: 
+\noun on
+René Doursat, 
+\noun default
+School of Biomedical Engineering, Drexel University
+\end_layout
+
+\begin_layout Standard
+
+\size larger
+Co-instructor
+\size large
+: 
+\noun on
+Arnaud Banos
+\noun default
+, ISCPIF and UMR CNRS GéographieS-Cités, Paris
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{array}{ccc}
+\star &  & \star\\
+ & \star
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\begin_inset VSpace bigskip
+\end_inset
+
+
 \end_layout
 
 \begin_layout Abstract
@@ -183,7 +300,7 @@ new urban science
 \noun on
 Batty
 \noun default
- stands in 
+ states in 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "batty2013new"
@@ -257,7 +374,7 @@ In that context, Cellular Automata models (CA), in which agents (cells)
  are fixed and evolve according to the state of neighbour cells, have been
  broadly studied and used.
  Their use in urban planning, for reproduction of existing urban forms and
- land-use patrerns, was already described by 
+ land-use patterns, was already described by 
 \noun on
 White
 \noun default
@@ -343,8 +460,8 @@ key "peeters2009space"
 \end_inset
 
  that allows to show discontinuities in settlement patterns and the strong
- path-dependance of these.
- We propose to build a model in the frame of CA modeling of urban systems..
+ path-dependence of these.
+ We propose to build a model in the frame of CA modeling of urban systems.
 \end_layout
 
 \begin_layout Standard
@@ -367,7 +484,7 @@ key "MBB09,moreno2007conception"
 ), that proposed to integrate network effects in a CA model for modeling
  urban morphology.
  Their aim was to test the effects of physical proximity on urban shape,
- introducing the modeling of urban mobility through a network which evolution
+ introducing the modeling of urban mobility through a network whose evolution
  is coupled with the evolution of the urban shape.
  We generalise the model, allowing to take into account functional properties
  of the urban environment.
@@ -440,7 +557,7 @@ key "golden2012modeling"
 \end_inset
 
  to simplify).
- Among these fixed agents evolves an euclidian network which agents are
+ Among these fixed agents evolves an euclidian network whose agents are
  roads: 
 \begin_inset Formula $N(t)=(V(t),E(t))$
 \end_inset
@@ -461,15 +578,17 @@ key "golden2012modeling"
 \begin_inset Formula $C_{0}$
 \end_inset
 
- for each an activity is defined by 
-\begin_inset Formula $a:C_{0}\rightarrow[|1;a_{max}|]$
+ for each an activity is defined by an integer-valued function 
+\begin_inset Formula $a:C_{0}\rightarrow\{1,\ldots,a_{max}\}$
 \end_inset
 
 .
+ The initial network and centers can be either generated at random (following
+ consistent specifications) or following a user-defined configuration.
 \end_layout
 
 \begin_layout Standard
-In all generality, we suppose that there exists a fixed number of function
+In all generality, we suppose that there exists a fixed number of functions
  defined on cells and in time, that we call explicative variables, noted
  
 \begin_inset Formula $(d_{k})_{1\leq k\leq K}$
@@ -564,10 +683,20 @@ Giving these settings and variables, the evolution of the system for one
 
 \begin_layout Itemize
 New cell values are calculated by 
-\begin_inset Formula $v(i,j,t)=\frac{\sum_{k=1}^{K}c_{k}\cdot\frac{(d_{k}^{max}-d_{k})}{(d_{k}^{max}-d_{k}^{min})}}{\sum_{k=1}^{K}c_{k}}$
+\begin_inset Formula $v(i,j,t)=\frac{1}{\sum_{k=1}^{K}c_{k}}\cdot\sum_{k=1}^{K}c_{k}\cdot\frac{(d_{k}^{max}-d_{k})}{(d_{k}^{max}-d_{k}^{min})}$
 \end_inset
 
+.
+ It corresponds to a weighted average of the normalized heterogeneous functions
+ 
+\begin_inset Formula $d_{k}$
+\end_inset
 
+, for which each influence is controlled by the weight 
+\begin_inset Formula $c_{k}$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Itemize
@@ -578,7 +707,7 @@ New cell values are calculated by
 \begin_inset Formula $N$
 \end_inset
 
- cells with the best value are built in a random order
+ cells with the best value are built in a random order.
 \end_layout
 
 \begin_layout Itemize
@@ -664,6 +793,19 @@ Once a structure has been generated, one need to quantify its properties,
  purpose.
  Therefore we need evaluation functions, that can be both objective quantificati
 ons or fitness functions for structures.
+ The following proposed measures take into account all explicative variables,
+ since their distribution that is an emerging feature is not supposed to
+ be known before development and are therefore essential to monitor, at
+ the exception of the distance to roads (
+\begin_inset Formula $d_{2}$
+\end_inset
+
+) on which we keep always control precisely because of the network development
+ rule (fixed distance 
+\begin_inset Formula $d_{s}$
+\end_inset
+
+ over whoch a road is built).
 \end_layout
 
 \begin_layout Paragraph
@@ -672,7 +814,7 @@ Morphology
 
 \begin_layout Standard
 We qualify the morphologic structure of a configuration by projecting on
- a plan corresponding to the following indicators:
+ a plane corresponding to the following indicators:
 \end_layout
 
 \begin_layout Itemize
@@ -756,12 +898,18 @@ chessboard-like
 \begin_layout Standard
 \begin_inset Formula 
 \[
-M(t)=\frac{M}{(\sum_{i=1}^{M}(P_{i}-\bar{P}))^{2}}\cdot\frac{\sum_{i\neq j}\frac{1}{d_{ij}}\cdot(P_{i}-\bar{P})(P_{j}-\bar{P})}{\sum_{i\neq j}\frac{1}{d_{ij}}}
+M(t)=\frac{M}{\sum_{i\neq j}\frac{1}{d_{ij}}}\cdot\frac{\sum_{i\neq j}\frac{1}{d_{ij}}\cdot(P_{i}-\bar{P})(P_{j}-\bar{P})}{(\sum_{i=1}^{M}(P_{i}-\bar{P}))^{2}}
 \]
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+We recognize the normalized ratio between a modified covariance (weighting
+ the pairwise correlations by the distance between centroids) and the variance
+ of the distribution.
 \end_layout
 
 \begin_layout Paragraph
@@ -790,18 +938,6 @@ key "banos2012towards"
 \end_inset
 
 , 
-\begin_inset Formula $d_{ij\rightarrow c}$
-\end_inset
-
- the distance from 
-\begin_inset Formula $i$
-\end_inset
-
- to 
-\begin_inset Formula $c$
-\end_inset
-
- through the network, 
 \begin_inset Formula $d(ij,c)$
 \end_inset
 
@@ -815,7 +951,7 @@ key "banos2012towards"
 \begin_layout Standard
 \begin_inset Formula 
 \[
-S(t)=\left[\frac{1}{\sum_{i,j}\delta(i,j,t)}\cdot\sum_{\delta(i,j,t)\neq0}\left(\frac{d_{ij\rightarrow c_{min}^{ij}}}{d(ij,c_{min}^{ij})}\right)^{p_{n}}\right]^{1/p_{n}}
+S(t)=\left[\frac{1}{\sum_{i,j}\delta(i,j,t)}\cdot\sum_{\delta(i,j,t)\neq0}\left(\frac{d_{3}(i,j,t)}{d(ij,c_{min}^{ij})}\right)^{p_{n}}\right]^{1/p_{n}}
 \]
 
 \end_inset
@@ -828,15 +964,18 @@ Functional accessibility
 \end_layout
 
 \begin_layout Standard
-The global accessibility is, as for density, the integration of local accessibil
-ities on all cells, that is simply with 
+The global accessibility is, as for density, the integration of relative
+ local accessibilities on all cells.
+ We consider the relative accessibility in order to be able to compare configura
+tion of different sizes through a normalized measure That is simply with
+ 
 \begin_inset Formula $p_{GA}\in[1,+\infty[$
 \end_inset
 
 ,
 \begin_inset Formula 
 \[
-A(t)=\left[\frac{1}{\sum_{i,j}\delta(i,j,t)}\cdot\sum_{\delta(i,j,t)\neq0}d_{4}(i,j,t)^{p_{GA}}\right]^{1/p_{GA}}
+A(t)=\left[\frac{1}{\sum_{i,j}\delta(i,j,t)}\cdot\sum_{\delta(i,j,t)\neq0}\left(\frac{d_{4}(i,j,t)}{max_{i,j}d_{4}}\right)^{p_{GA}}\right]^{1/p_{GA}}
 \]
 
 \end_inset
@@ -938,43 +1077,6 @@ key "QGIS_software"
 Generation of urban patterns
 \end_layout
 
-\begin_layout Paragraph
-Typical patterns
-\end_layout
-
-\begin_layout Standard
-Different configurations of the weights allow to generate very different
- structures.
- The obtained patterns for extreme values of parameters (e.
- g.
- with only influence of density on values, or of distance to centres) were
- quite the one expected as there is in such case less emergent behavior.
- It is striking to note that some characteristic patterns exactly correspond
- to the structures that 
-\noun on
-Le Corbusier
-\noun default
- has analysed when trying to build a typology of the 
-\shape italic
-3 établissements humains
-\size small
- 
-\shape default
-\size default
-(human settlements) as it is sumed up by 
-\noun on
-Mangin
-\noun default
- in 
-\begin_inset CommandInset citation
-LatexCommand cite
-key "panerai1999projet"
-
-\end_inset
-
- (see figure 2 for details).
-\end_layout
-
 \begin_layout Standard
 \begin_inset ERT
 status open
@@ -983,7 +1085,7 @@ status open
 
 
 \backslash
-includegraphics[trim=1cm 3cm 0.5cm 0cm,width=0.5
+includegraphics[trim=1cm 3cm 0.5cm 0cm,width=0.45
 \backslash
 textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Docs/Fi
 nal/images/corbu}
@@ -1058,6 +1160,74 @@ key "panerai1999projet"
 
 \end_layout
 
+\begin_layout Paragraph
+Typical patterns
+\end_layout
+
+\begin_layout Standard
+We launch the model on random initial configurations, with randomly distributed
+ centers whose activities are also random but are globally balanced between
+ all possible activities.
+ The initial network is created through progressive connexion of connected
+ components (what always terminates since the number of connected components
+ in the network is then strictly decreasing).
+ Different configurations of the weights allow to generate very different
+ structures.
+ The obtained patterns for extreme values of parameters (e.
+ g.
+ with only influence of density on values, or of distance to centres) were
+ quite the one expected as there is in such case less emergent behavior.
+ It is striking to note that some characteristic patterns exactly correspond
+ to the structures that 
+\noun on
+Le Corbusier
+\noun default
+ has analysed when trying to build a typology of the 
+\shape italic
+3 établissements humains
+\size small
+ 
+\shape default
+\size default
+(human settlements) as it is sumed up by 
+\noun on
+Mangin
+\noun default
+ in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "panerai1999projet"
+
+\end_inset
+
+ (see figure 2 for details).
+\end_layout
+
+\begin_layout Paragraph
+Classification of structures
+\end_layout
+
+\begin_layout Standard
+Thanks to the morphological indicators, we were able to proceed to a description
+ of morphological classes that can be obtained with any values of the parameters.
+ The projection of a configuration in the plan 
+\begin_inset Formula $Vect(D(t_{f}),M(t_{f}))$
+\end_inset
+
+ allows to understand how the structure are different and where they are
+ situated in a certain 
+\begin_inset Quotes eld
+\end_inset
+
+classification
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Fig.
+ 3 sums up the results of that classification.
+\end_layout
+
 \begin_layout Standard
 \begin_inset ERT
 status open
@@ -1081,7 +1251,7 @@ nal/images/morpho}
 
 \series bold
 \size footnotesize
-(b)
+(a)
 \series default
  Projection in the plan and some structures associated to some particular
  points.
@@ -1110,7 +1280,7 @@ status open
 includegraphics[width=0.45
 \backslash
 textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
-/Morphologies/morphologicalClassification}
+/Morphologies/paramInfluences}
 \end_layout
 
 \end_inset
@@ -1124,12 +1294,14 @@ textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
 \size footnotesize
 (b)
 \series default
- Influence of each parameter on the location of structure.
- Color darkness corresponds to the relative weight of the parameter in each
+ Influence of each parameter on the location of the structure in the morphologic
+al plane.
+ Color darkness correspond to the relative weight of the parameter in each
  case.
  If the previous plot showed that extreme cases were located at expected
- places, this one shows that dark point are quite uniformaly distributed,
- what means that some combinations created some 
+ places, this one shows that dark point are quite uniformaly distributed
+ for the role of centers, accessibility and roads.
+ That means that some combinations created some 
 \begin_inset Quotes eld
 \end_inset
 
@@ -1138,6 +1310,11 @@ chaos
 \end_inset
 
  in the location of structures.
+ Only density weight gives one predictible result: the fact that the cloud
+ of points in low densities corresponds to great influence of density in
+ growth.
+ However, the could at the right of the plot shows that interaction between
+ weights quickly limits that predictibility.
 \end_layout
 
 \begin_layout Standard
@@ -1151,30 +1328,8 @@ Fig.
  
 \end_layout
 
-\begin_layout Paragraph
-Classification of structures
-\end_layout
-
 \begin_layout Standard
-Thanks to the morphological indicators, we were able to proceed to a description
- of morphological classes that can be obtained with any values of the parameters.
- The projection of a configuration in the plan 
-\begin_inset Formula $Vect(D(t_{f}),M(t_{f}))$
-\end_inset
-
- allows to understand how the structure are different and where they are
- situated in a certain 
-\begin_inset Quotes eld
-\end_inset
-
-classification
-\begin_inset Quotes erd
-\end_inset
-
-.
- Fig.
- 3 sums up the results of that classification.
- For extreme values of parameters, the results were quite the one expected,
+For extreme values of parameters, the results were quite the one expected,
  but some combinations seem to project the structures at unexpected places,
  what we can take as a sort of emerging chaos in the global system.
 \end_layout
@@ -1194,7 +1349,7 @@ status open
 includegraphics[width=0.45
 \backslash
 textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
-/Robustness/400repets}
+/Robustness/manyConfs}
 \end_layout
 
 \end_inset
@@ -1207,18 +1362,28 @@ textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
 \series bold
 \size footnotesize
 Fig.
- 4 | Statistical distribution of outputs for a sample point in the parameter
+ 4 | Statistical distribution of outputs for sample points in the parameter
  space
 \series default
 .
- It corresponds to equal weights (of value 1) to each variable, for which
- the distribution is calculated on around 500 repetitions for random initial
- configurations.
- Many other samples showed same standard deviations.
+ For many combination of weights 
+\begin_inset Formula $(c_{k})$
+\end_inset
+
+, we calculated the distribution of these 4 outputs on around 500 repetitions
+ for random initial configurations.
+ We represent for each output three points of the parameter space that give
+ quite disjoint distributions, to show how we are in those case able to
+ compare them and draw conclusions from the comparison.
+ At each time, we plot the Gaussian fit (red curves), that is generally
+ close to the distribution.
  The shape of distributions translates the small sensitivity of the model
  to spatial configuration, since it covers at most one tenth of the range
  of output functions (0.1/1 for density, 1/10 for accessibility e.
  g.).
+ That confirms the consistency of the model since we expected the output
+ to be quite independant of initial positions and that their comparison
+ could lead to statistically consistent results.
 \end_layout
 
 \begin_layout Paragraph
@@ -1245,7 +1410,7 @@ Therefore, we launched large number of simulations with same parameter values
  (around 20 samples) and the distributions were each time of same amplitude
  and same deviation.
  Fig.
- 3 shows these distributions for the sample corresponding to equal weights
+ 4 shows these distributions for the sample corresponding to equal weights
  to each parameter.
  Given the numerical values of deviations (each time around 0.1 times the
  amplitude of the function), we can conclude that outputs are significantly
@@ -1460,6 +1625,9 @@ main
  what lead to the calculation of aroun 3200 configurations.
  Examples of surfaces defined on the space of two parameters are shown in
  figure 6.
+ For each measure, we chose to plot against 2 parameters out of the 4 possible
+ dimensions, whose were supposed to have more influence and for which the
+ surfaces were the most revealing.
  Economic evaluation was not plotted for efficiency reasons.
  However, since it depends directly on morphology and network and that it
  is not probable that the function would exactly smooth the irregularities,
@@ -1470,103 +1638,6 @@ main
  appear in some point as being somehow chaotic and non-linear.
  Secondly, it gives the range of outputs, allowing to state the robustness
  regarding initial conditions as we stand before.
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includegraphics[width=0.21
-\backslash
-textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Data/At
-lantis}
-\end_layout
-
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includegraphics[width=0.23
-\backslash
-textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
-/Application/example}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\size footnotesize
-(b)
-\series default
- Left: existing masterplan for the district as it has been realised.
- Areas correspond to colored zones, and actual activities correspond to
- the color.
- Station, not mentioned is in the upper left (see center positions in model);
- Right: example of obtained configuration, color correspond to possible
- distribution of activities.
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-includegraphics[width=0.45
-\backslash
-textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
-/Application/application.jpg}
-\end_layout
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\size footnotesize
-(b)
-\series default
- Pareto plot of configuration in the plan economic performance/accessibility.
- Green point corresponds to the real situation, that is in fact not so far
- from the Pareto frontier so is a quite good solutions.
- Red points that are Pareto-optimal solution with a good compromise between
- the two objectives, correspond to situation where activities are totally
- mixed.
-\end_layout
-
-\begin_layout Standard
-
-\series bold
-\size footnotesize
-Fig.
- 7 | Concrete application.
-
-\series default
- 
 \end_layout
 
 \begin_layout Subsection
@@ -1619,6 +1690,125 @@ The concrete situation will consist on the planning from scratch of a new
 \end_layout
 
 \begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.21
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Data/At
+lantis}
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.23
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
+/Application/example}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\size footnotesize
+(a)
+\series default
+ Left: existing masterplan for the district as it has been realised.
+ Areas correspond to colored zones, and actual activities correspond to
+ the color.
+ Station, not mentioned is in the upper left (see center positions in model);
+ Right: example of obtained configuration, color correspond to possible
+ distribution of activities.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.45
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
+/Application/applicationcorrect.jpg}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\size footnotesize
+(b)
+\series default
+ Pareto plot of configuration in the plan economic performance/accessibility.
+ Green point corresponds to the real situation, that is in fact not so far
+ from the Pareto frontier so is a mean solution in quality (
+\begin_inset Formula $E=0.07$
+\end_inset
+
+,
+\begin_inset Formula $A=0.76$
+\end_inset
+
+).
+ Red points that are some of the Pareto-optimal solutions with a good compromise
+ between the two objectives, correspond to situation where activities are
+ totally mixed.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+\size footnotesize
+Fig.
+ 7 | Concrete application.
+
+\series default
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
 We plot the configuration in the plan corresponding to the two objectives
  and we naturally obtain a Pareto-front of 
 \begin_inset Quotes eld
@@ -1654,6 +1844,13 @@ The reproduction of existing urban facts (in the sense of the morphological
  and would need further explorations.
 \end_layout
 
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
 \begin_layout Paragraph
 Scale of the model
 \end_layout
@@ -1669,7 +1866,11 @@ One ambiguity of the model is that it can be applied at several scales and
  object, it can obviously be pointed as a huge issue.
  However, we argue that this multi-scale application is legitimate.
  First, a large number of urban systems and associated processes have been
- shown to be scale-free as Pumain shows in 
+ shown to be scale-free as 
+\noun on
+Pumain
+\noun default
+ shows in 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "pumain2004scaling"
@@ -1687,7 +1888,11 @@ key "FractalCities"
 \end_inset
 
 ) what would strengthen that paradigm.
- Following Barthelemy in 
+ Following 
+\noun on
+Barthelemy
+\noun default
+ in 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "2013arXiv1309.3961L"
@@ -1714,6 +1919,13 @@ good
 \end_inset
 
  proxies of domining processes.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
 \end_layout
 
 \begin_layout Paragraph
@@ -1777,6 +1989,13 @@ key "haken2003face"
  This theory has however neither been quantified, confirmed or invalidated.
 \end_layout
 
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
 \begin_layout Paragraph
 Quantitative calibration
 \end_layout
@@ -1830,6 +2049,13 @@ key "tannier:halshs-00461657,frankhauser2005multi"
 ed.
 \end_layout
 
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
 \begin_layout Paragraph
 Complex coupling with economic model
 \end_layout
@@ -1858,7 +2084,14 @@ key "varenne2013modeliser"
  for example).
 \end_layout
 
-\begin_layout Section*
+\begin_layout Standard
+\begin_inset VSpace bigskip
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
 Conclusion
 \end_layout
 
@@ -1895,7 +2128,11 @@ mixed-use
 
  city, on which litterature is still poor and that could be the object of
  future work.
- That paradigm is proposed by urbanists such as Mangin in 
+ That paradigm is proposed by urbanists such as 
+\noun on
+Mangin
+\noun default
+ in 
 \begin_inset CommandInset citation
 LatexCommand cite
 key "mangin2004ville"
@@ -1981,7 +2218,7 @@ Core source code of the NetLogo implementation of the model, sample of data
 \begin_inset CommandInset bibtex
 LatexCommand bibtex
 bibfiles "/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Biblio/projetCSMS,/Users/Juste/Documents/ComplexSystems/Biblio/BibTeX/global,/Users/Juste/Documents/ComplexSystems/CCUPD/Biblio/ccupd"
-options "plain"
+options "unsrt"
 
 \end_inset
 

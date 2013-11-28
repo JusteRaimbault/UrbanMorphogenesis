@@ -1,0 +1,1658 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass beamer
+\begin_preamble
+\usetheme{Warsaw}
+%\usetheme{Boadilla}
+% or ...
+
+\usecolortheme{orchid}
+\setbeamertemplate{footline}[text line]{} % makes the footer EMPTY
+
+\setbeamercovered{transparent}
+% or whatever (possibly just delete it)
+
+
+\usepackage{bbm}
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 2
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Generative coupled model for urban configuration optimisation
+\end_layout
+
+\begin_layout Author
+J.
+\begin_inset space ~
+\end_inset
+
+Raimbault
+\begin_inset Formula $^{1,2}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Institute
+\begin_inset Formula $^{1}$
+\end_inset
+
+Erasmus Mundus Master in Complex Systems Science, Ecole Polytechnique
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Formula $^{2}$
+\end_inset
+
+LVMT, Ecole Nationale des Ponts et Chaussées
+\end_layout
+
+\begin_layout Date
+
+\shape italic
+Class: Complex System Made Simple
+\begin_inset Newline newline
+\end_inset
+
+Instructor: René Doursat, Drexel University
+\begin_inset Newline newline
+\end_inset
+
+Co-instructor: Arnaud Banos, ISCPIF/Géographie-Cités
+\shape default
+
+\begin_inset Newline newline
+\end_inset
+
+Project Final Presentation
+\begin_inset Newline newline
+\end_inset
+
+November 29, 2013
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+AtBeginSection[]{
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  
+\backslash
+frame<beamer>{ 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+frametitle{Outline}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+tableofcontents[currentsection] 
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+  }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Outline
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout BeginFrame
+Why use cellular automata in urban planning ?
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+First introduction in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "white1993cellular"
+
+\end_inset
+
+ and then 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "batty1997cellular"
+
+\end_inset
+
+: reproduction of fractal urban form and land-use patterns.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Since then, numerous applications.
+ E.
+ g.
+ coupling with GIS in quantitative geography, calibrations on real land-uses
+ configurations (review in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "iltanen2012cellular"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Examples: micro-economic model of sprawl 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "DBM11"
+
+\end_inset
+
+; 1D CA to show path-dependance of settlements patterns 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "peeters2009space"
+
+\end_inset
+
+; real-time rules for sustainable development 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "Wu96alinguistic"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Examples
+\end_layout
+
+\begin_layout ExampleBlock
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+<1->
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+Examples of CA models
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename images/dbmexample.png
+	lyxscale 20
+	scale 17
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Microeconomic model of sprawl, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "DBM11"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename images/exampleWhite.png
+	lyxscale 25
+	scale 20
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Land use simulations, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "van2012activity"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Different uses of CA models in urban planning
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_deeper
+\begin_layout BeginFrame
+Our framework
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Influence of proximity on urban form: proposition of modeling transportation
+ network coupled with a CA in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "moreno2007conception,MBB09"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Generalisation and extension of the model: from morphological to functionnal
+ properties of the urban environment.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Objective: apply the model to a real case, by proposing a method for the
+ optimisation of planning on all possible functional configurations.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Model description
+\end_layout
+
+\begin_layout BeginFrame
+Settings and agents
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Fixed agents: cells in a square lattice 
+\begin_inset Formula $(L_{i,j})_{1\leq i,j\leq N}$
+\end_inset
+
+ , occupied or not (function 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $\delta(i,j,t)$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Evolving euclidian network 
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+
+\begin_inset Formula $N(t)=(V(t),E(t))$
+\end_inset
+
+, including fixed city centers 
+\begin_inset Formula $C_{0}\subset V(0)$
+\end_inset
+
+ for each an activity 
+\begin_inset Formula $a\in\{1,\ldots,a_{max}\}$
+\end_inset
+
+ is defined (functional properties of the urban scape.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Heterogeneous explicative variables 
+\begin_inset Formula $(d_{k})_{1\leq k\leq K}$
+\end_inset
+
+ defined on cells, with associated weights 
+\begin_inset Formula $(c_{k})_{1\leq k\leq K}$
+\end_inset
+
+ (main parameters of the model), that are:
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+\begin_inset Formula $d_{1}$
+\end_inset
+
+ the density around the cell (in a fixed radius 
+\begin_inset Formula $r$
+\end_inset
+
+)
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d_{2}$
+\end_inset
+
+ the distance to the nearest road
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $d_{3}$
+\end_inset
+
+ the distance to the nearest town center through the network
+\end_layout
+
+\begin_layout Itemize
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $d_{4}=\left\Vert (d_{A}(a))_{1\leq a\leq a_{max}}\right\Vert _{p_{A}}$
+\end_inset
+
+ with 
+\family default
+\series default
+\shape default
+\size default
+\emph default
+\bar default
+\strikeout default
+\uuline default
+\uwave default
+\noun default
+\color inherit
+
+\begin_inset Formula $d_{A}(a)$
+\end_inset
+
+ distance to nearest center with activity 
+\begin_inset Formula $a$
+\end_inset
+
+ through the network: integrated accessibility of activities
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Model workflow
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/flowchart.pdf
+	lyxscale 10
+	scale 56
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Evolution rules
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At each time step:
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Sprawling of occupied urban structure.
+ The best 
+\begin_inset Formula $N$
+\end_inset
+
+ cells according to the value 
+\begin_inset Formula $v(i,j,t)=\frac{1}{\sum_{k=1}^{K}c_{k}}\cdot\sum_{k=1}^{K}c_{k}\cdot\frac{(d_{k}^{max}-d_{k})}{(d_{k}^{max}-d_{k}^{min})}$
+\end_inset
+
+ are built.
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Adaptation of the network: when a new cell is built, if 
+\begin_inset Formula $d_{2}>d_{s}$
+\end_inset
+
+ fixed parameter, the cell is connected to the network with a new perpendicular
+ road.
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Evaluation functions
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+\size larger
+Objective Morphological indicators
+\end_layout
+
+\begin_layout Itemize
+Integrated local density 
+\begin_inset Formula $ $
+\end_inset
+
+
+\begin_inset Formula $D(t)=\left[\frac{1}{\sum_{i,j}\delta(i,j,t)}\cdot\sum_{\delta(i,j,t)\neq0}d_{1}(i,j,t)^{p_{d}}\right]^{1/p_{d}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Moran index (spatial auto-correlation, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "tsai2005quantifying"
+
+\end_inset
+
+): world decomposed in a grid of size 
+\begin_inset Formula $M$
+\end_inset
+
+ (
+\begin_inset Formula $1\ll M\ll N$
+\end_inset
+
+ ), 
+\begin_inset Formula $(P_{i})_{1\leq i\leq M}$
+\end_inset
+
+ are populations in each part of the grid, then
+\begin_inset Formula 
+\[
+M(t)=\frac{M}{\sum_{i\neq j}\frac{1}{d_{ij}}}\cdot\frac{\sum_{i\neq j}\frac{1}{d_{ij}}\cdot(P_{i}-\bar{P})(P_{j}-\bar{P})}{(\sum_{i=1}^{M}(P_{i}-\bar{P}))^{2}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Evaluation functions
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+\size larger
+Performance indicators
+\end_layout
+
+\begin_layout Itemize
+Network speed (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "banos2012towards"
+
+\end_inset
+
+) 
+\begin_inset Formula $S(t)=\left\Vert \left(\frac{d_{3}(i,j,t)}{d(ij,c_{min}^{ij})}\right)\right\Vert $
+\end_inset
+
+ with 
+\begin_inset Formula $d(ij,c_{min}^{ij})$
+\end_inset
+
+ euclidian distance to nearest center density
+\end_layout
+
+\begin_layout Itemize
+Normalized functional accessibility 
+\begin_inset Formula $A(t)=\left\Vert \left(\frac{d_{4}(i,j,t)}{max_{i,j}d_{4}}\right)\right\Vert _{p_{GA}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Socio-economic segregation potential: run on the generated configuration
+ of an economic residential dynamics ABM (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "schelling1969models"
+
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "benenson1998multi"
+
+\end_inset
+
+), that is strongly sensible to spatial structure according to 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "banos2012network"
+
+\end_inset
+
+, calculation of the final spatialised segregation index 
+\begin_inset Formula $E$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Demonstration
+\end_layout
+
+\begin_layout BeginFrame
+Demonstration
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\shape italic
+\size large
+Demonstration of the implementation of the model of simulation in NetLogo
+\shape default
+\size default
+ 
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Results
+\end_layout
+
+\begin_layout BeginFrame
+Results: generated shapes
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/ExtremeConfs/TreeLikeCity.png
+	lyxscale 20
+	scale 21
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+\begin_inset Quotes eld
+\end_inset
+
+A city can be a tree
+\begin_inset Quotes erd
+\end_inset
+
+, 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "alexander1964city"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/Juste/Documents/ComplexSystems/ProjetUrbanFramework/Models/Raumulus/results/LinkedCenters_eqCoefs_MoreCells.png
+	lyxscale 25
+	scale 16
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Intermediate shape
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/Juste/Documents/ComplexSystems/ProjetUrbanFramework/Models/Raumulus/results/bigWorld-distances.png
+	lyxscale 20
+	scale 19
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+One center, no density
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Examples of generated shapes
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Results: typology of structures
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[trim=1cm 3cm 0.5cm 0cm,width=0.6
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Docs/Fi
+nal/images/corbu}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Parallel between Le Corbusier's typology of 
+\begin_inset Quotes eld
+\end_inset
+
+human settlements
+\begin_inset Quotes erd
+\end_inset
+
+ and some generated structures
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Morphological classification
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.55
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Docs/Fi
+nal/images/morpho}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Projection in the morphological plane of indicators; classification of some
+ structures.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Statistical analysis and exploration of parameter space
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.4
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
+/Robustness/manyConfs}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Statistical distributions of outputs for different points in the parameter
+ space
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.4
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
+/GridExploration/plots3d}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Surface of outputs as functions fo two selected parameters
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Exploration
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Why are these explorations useful ?
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Statistical study of the behavior of the model: are the output sensible
+ to initial spatial configuration ?
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Demonstration of the robustness of the model and of the possibility to compare
+ runs on different initial configurations (implying to make the calculations
+ on stochastic repetitions), behavior of outputs along moves in the parameter
+ space
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Other necessary points that we explored: influence of update type, size
+ of the grid for Moran index, behavior of the economic ABM.
+\end_layout
+
+\begin_layout BeginFrame
+Economic ABM
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.8
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
+/Economic/ConvergenceSegreg}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Time series of segregation index during a run of the economic ABM for different
+ configurations.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Concrete application: method
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Fixing the spatial initial structure and the parameters, optimise on the
+ possible distribution of activities among centers.
+ Choice of parameters is crucial.
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Importation of real GIS data: centers correpond to centroids of zones in
+ a district, initial network to main roads.
+ Some centers have fixed activity (stations), other can be 2 different ones
+ (residential or tertiary).
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Exploration of all possible configurations (possible here, 
+\begin_inset Formula $2^{8}=256$
+\end_inset
+
+ configurations), Pareto-plot of economic performance/accessibility.
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Concrete application: results
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.4
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Data/At
+lantis}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Raster map of the evaluated district
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=0.4
+\backslash
+textwidth]{/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results
+/Application/applicationcorrect.jpg}
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Pareto plot for optimisation on economic performance and accessibility
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Concrete application on the district of Massy, Atlantis
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Conclusion
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Many questions are still open: do we have the good scale of application
+ ? (although it should be scale-free), do we have isolated the dominant
+ processes ? (cf 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "2013arXiv1309.3961L"
+
+\end_inset
+
+) 
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+We have however been able to have qualitative valid results for the generated
+ shapes and a quantitative application of the model to a real case.
+ 
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout Itemize
+Can be seen as going in the sense of the emergence of a rigourous 
+\begin_inset Quotes eld
+\end_inset
+
+evidence-based urbanism
+\begin_inset Quotes erd
+\end_inset
+
+, or 
+\begin_inset Quotes eld
+\end_inset
+
+quantitative urbanism
+\begin_inset Quotes erd
+\end_inset
+
+ (
+\begin_inset CommandInset citation
+LatexCommand cite
+key "portugali2012complexity"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset VSpace vfill
+\end_inset
+
+
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{frame}[allowframebreaks]
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+frametitle{References}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Biblio/projetCSMS,/Users/Juste/Documents/ComplexSystems/Biblio/BibTeX/global"
+options "apalike"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{frame}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout BeginFrame
+Questions
+\end_layout
+
+\begin_layout Standard
+
+\size largest
+\begin_inset space \hfill{}
+\end_inset
+
+?
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout EndFrame
+
+\end_layout
+
+\end_body
+\end_document

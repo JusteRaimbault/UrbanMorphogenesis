@@ -90,7 +90,7 @@ to setup-vars-ABM
   ;;set lists of houses
   set available-houses sort-on [[value / rent] of patch-here] (houses)  
   
-  set max-ticks-economic 100
+  set max-ticks-economic 250
   
 end
 
@@ -112,6 +112,9 @@ to go-one-step-ABM
   
   ;;display
   display-ABM
+  
+  ;;monitor functions if needed
+  monitor-functions
   
   tick
 end
@@ -198,6 +201,15 @@ to-report economic-segregation
    report 1 / (2 * max [wealth] of households ) * s / totw
 end
 
+
+
+to monitor-functions
+  if monitor-economic? [
+    set current-output-conf-economic lput (list (word "totalwealth-" ticks) (sum [wealth] of households)) current-output-conf-economic 
+    set current-output-conf-economic lput (list (word "meanrent-" ticks) (mean [rent] of (patches with [constructed?]))) current-output-conf-economic
+    set current-output-conf-economic lput (list (word "segregation-" ticks) (economic-segregation)) current-output-conf-economic  
+  ]
+end
 
 
 

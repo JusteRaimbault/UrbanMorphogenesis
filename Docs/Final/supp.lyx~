@@ -3,6 +3,9 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\date{}
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language english
@@ -25,9 +28,10 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_amsmath 1
 \use_esint 1
 \use_mhchem 1
@@ -42,6 +46,10 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 2cm
+\topmargin 3cm
+\rightmargin 2cm
+\bottommargin 3cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -60,30 +68,37 @@
 \begin_body
 
 \begin_layout Title
-Complex Systems Made Simple
-\begin_inset Newline newline
-\end_inset
-
-Project final report
-\begin_inset Newline newline
-\end_inset
-
-
-\begin_inset Formula $\begin{array}{ccc}
-\star &  & \star\\
- & \star
-\end{array}$
-\end_inset
-
-
-\begin_inset Newline newline
-\end_inset
-
 Generative coupled model for Urban configuration optimisation
 \begin_inset Newline newline
 \end_inset
 
+
+\begin_inset Formula 
+\[
+\begin{array}{ccc}
+\star &  & \star\\
+ & \star
+\end{array}
+\]
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
 Supplementary Material 1
+\begin_inset Formula 
+\[
+\begin{array}{ccc}
+\star &  & \star\\
+ & \star
+\end{array}
+\]
+
+\end_inset
+
+
 \begin_inset Newline newline
 \end_inset
 
@@ -159,7 +174,7 @@ A new variable is associated to houses (i.
 
 .
  Mobile agents are households 
-\begin_inset Formula $h_{k}$
+\begin_inset Formula $h_{k}\in H$
 \end_inset
 
  that have a wealth function 
@@ -241,38 +256,115 @@ Convergence and evaluation of segregation
 After a certain number of time steps (around 100 in practice) the system
  freezes concerning indicators of cumulated wealth and segregation index,
  as it is explained in the litterature.
- Figure 1 shows the convergence of cumulated wealth.
+ Figure 1 shows the convergence of segregation index and mean rent of houses
+ on many repetitions of the model for different values of parameters.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset space \hfill{}
 \end_inset
 
 
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
 \begin_inset Graphics
-	filename images/econConv.png
+	filename /Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Economic/convergenceRents.pdf
+	lyxscale 20
+	scale 40
 
-\end_inset
-
-
-\begin_inset space \hfill{}
-\end_inset
-
-
-\begin_inset space \hfill{}
 \end_inset
 
 
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Convergence of cumulated wealth
+Time-series of rents.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Economic/ConvergenceSegreg.pdf
+	lyxscale 20
+	scale 40
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Time-series of segregation indexes.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\begin_inset space \hfill{}
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Convergence of the model.
+ For each plot, each three curves correspond to a configuration of parameters.
+ The values are calculated on 20 repetitions of the economic ABM, and the
+ calculation is repeted on 100 initial spatial configuration, for which
+ the error bars of distribution are ploted for each point.
 \end_layout
 
 \end_inset
@@ -294,7 +386,7 @@ We are then able to calculate the segregation index on the frozen state,
  and defined by the classic spatial diversity index calculated on households:
 \begin_inset Formula 
 \[
-d=\frac{1}{Card(P)}\cdot\frac{\sum_{h'\neq h}\frac{\left|w(h)-w(h')\right|}{d(h,h')}}{\sum_{h'\neq h}\frac{1}{d(h,h')}}
+d=\frac{1}{2max_{h}(w(h))}\cdot\frac{\sum_{h'\neq h}\frac{\left|w(h)-w(h')\right|}{d(h,h')}}{\sum_{h'\neq h}\frac{1}{d(h,h')}}
 \]
 
 \end_inset
