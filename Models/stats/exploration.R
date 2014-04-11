@@ -57,12 +57,12 @@ robManyConfs <- function(cols){
   par(mfcol=c(2,2))
   histFit(cols,5,c(0,1),c(0,110),0,"Density",c("red3","green","yellow"))
   histFit(cols,6,c(0,1),c(0,40),0.4,"Moran",c("red3","green","yellow")) 
-  histFit(cols,7,c(1,3),c(0,75),0,"Speed",c("red3","green","yellow")) 
+  histFit(cols,7,c(1,2),c(0,20),0.2,"Speed",c("red3","green","yellow")) 
   histFit(cols,8,c(0,1),c(0,90),0,"Accessibility",c("red3","green","yellow"))
   
 }
 
-robManyConfs(c(2,4,6))
+robManyConfs(c(2,4,8))
 
 removeOutliers<-function(x,prop){
   if(prop>0){
