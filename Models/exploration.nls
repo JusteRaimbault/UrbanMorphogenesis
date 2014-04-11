@@ -79,8 +79,13 @@ to grid-exploration [n-repets param-names-and-bounds reporter-names output-file]
 end
 
 to launch-grid
-  grid-exploration 500 [["distance-to-activities-coefficient" 0 1 1]["density-coefficient" 0 1 1]["distance-to-center-coefficient" 0 1 1]["distance-to-roads-coefficient" 0 1 1]] ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-density" "eval-activities" "eval-economic"] "../Results/Robustness/500manyparams.csv"
+  ;grid-exploration 500 [["distance-to-activities-coefficient" 0 1 1]["density-coefficient" 0 1 1]["distance-to-center-coefficient" 0 1 1]["distance-to-roads-coefficient" 0 1 1]] ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities"] "../Results/Robustness/500manyparamsGood.csv"
   ;grid-exploration 5 [["distance-to-activities-coefficient" 1 1 1]] ["eval-density" "spatial-autocorrelation-index"] "../Results/GridExploration/testRepets.csv"
+  
+  ;;grid explo
+  grid-exploration 5 [["distance-to-activities-coefficient" 0 1 0.2]["distance-to-center-coefficient" 0 1 0.2]["density-coefficient" 0 1 0.2]["distance-to-roads-coefficient" 0 1 0.2]] 
+    ["eval-density" "spatial-autocorrelation-index" "eval-speed" "eval-activities"] "../Results/GridExploration/gridGood.csv"
+  
 end
 
 

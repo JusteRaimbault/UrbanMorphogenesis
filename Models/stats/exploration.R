@@ -7,7 +7,7 @@ library(lattice)
 
 #stats on outputs
 
-dat <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Robustness/500manyparams.csv",sep=";")
+dat <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/UrbanMorphogenesis/Results/Robustness/500manyparamsGood.csv",sep=";")
 
 #dat$eval.activities <- dat$eval.activities/max(unlist(dat$eval.activities))
 mor <- dat$spatial.autocorrelation.index
@@ -27,7 +27,7 @@ robustnessPositions <- function(){
 
 robustnessPositions()
 
-histFit <-function(rows,col,xmax,ymax,prop,xlab,colors){
+histFit <-function(rows,col,xlim,ylim,prop,xlab,colors){
 	#rows in 0:(floor(length(dat[,1])/n_repets)-1)
   n_repets = 500
 	
@@ -43,7 +43,7 @@ histFit <-function(rows,col,xmax,ymax,prop,xlab,colors){
     #c = paste("light",colors[k])
     #if(c=="light red"){c="red3"}
 		h = hist(d,plot=TRUE,breaks=30,
-             xlim=c(0,xmax),ylim=c(0,ymax),
+             xlim=xlim,ylim=ylim,
              add=(i!=rows[1]),col=colors[k],
              xlab=xlab,main="")
 		K = max(h$counts)
@@ -53,16 +53,16 @@ histFit <-function(rows,col,xmax,ymax,prop,xlab,colors){
 	}
 }
 
-robManyConfs <- function(){ 
+robManyConfs <- function(cols){ 
   par(mfcol=c(2,2))
-  histFit(c(1,3,6),5,1,110,0,"Density",c("red3","green","yellow"))
-  histFit(c(1,3,6),6,1,40,0.4,"Moran",c("green","red3","yellow")) 
-  histFit(c(1,3,6),7,2,75,0,"Speed",c("red3","green","yellow")) 
-  histFit(c(1,3,5),9,11,90,0,"Accessibility",c("green","red3","yellow"))
+  histFit(cols,5,c(0,1),c(0,110),0,"Density",c("red3","green","yellow"))
+  histFit(cols,6,c(0,1),c(0,40),0.4,"Moran",c("red3","green","yellow")) 
+  histFit(cols,7,c(1,3),c(0,75),0,"Speed",c("red3","green","yellow")) 
+  histFit(cols,8,c(0,1),c(0,90),0,"Accessibility",c("red3","green","yellow"))
   
 }
 
-robManyConfs()
+robManyConfs(c(2,4,6))
 
 removeOutliers<-function(x,prop){
   if(prop>0){
@@ -84,9 +84,9 @@ removeOutliers<-function(x,prop){
 
 #Grid
 
-grid <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/GridExploration/grid.csv",sep=";")
+grid <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/UrbanMorphogenesis/Results/GridExploration/grid.csv",sep=";")
 
-plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsValues,theta,phi,title){
+plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsValues,theta,phi,title,xlab,ylab){
 	
 	x <- sort(unique(grid[[xParamName]]))
 	y <- sort(unique(grid[[yParamName]]))
@@ -105,16 +105,17 @@ plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsVa
 	#wireframe(x = z,row.values = x, column.values = y ,angle=50,scales = list(arrows = FALSE,distance=c(2,2,2)),screen = list(z = 30, x = -60),drape = TRUE,xlab=xParamName,ylab=yParamName,zlab=reporterName)
 	
 	#persp function is more ergonomic
-	persp(x=x,y=y,z=z,r=10,theta=theta,phi=phi,col="lightblue",xlab=xParamName,ylab=yParamName,zlab=reporterName,shade = 0.75, ticktype = "detailed",cex.lab=0.8,cex.axis=0.6,main=title)
+	persp(x=x,y=y,z=z,r=10,theta=theta,phi=phi,col="lightblue",xlab=expression(alpha),ylab=ylab,zlab="",shade = 0.75, ticktype = "detailed",cex.lab=0.8,cex.axis=0.6,main=title)
 	
 }
 
 #let plot different reporters 
 par(mfcol=c(2,2))
-plot3d("eval.density","distance.to.activities.coefficient","distance.to.roads.coefficient",c("distance.to.center.coefficient","density.coefficient"),c(0.4,0.4),45,25,"Density")
-plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),140,25,"Moran Index")
-plot3d("eval.speed","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),145,25,"Speed in Network")
-plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),45,35,"Accessibility")
+par(mar=c(1,2,1,2))
+plot3d("eval.density","distance.to.activities.coefficient","distance.to.roads.coefficient",c("distance.to.center.coefficient","density.coefficient"),c(0.4,0.4),45,25,"Density",xlab=expression(alpha[4]),ylab=expression(alpha[2]))
+plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),140,25,"Moran Index",xlab="alpha_1",ylab="alpha_2")
+plot3d("eval.speed","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),145,25,"Speed",xlab="alpha_4",ylab="alpha_1")
+plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),45,35,"Accessibility",xlab="alpha_4",ylab="alpha_1")
 
 
 
@@ -144,7 +145,7 @@ getReporterValue(c("distance.to.activities.coefficient","density.coefficient","d
 
 #plot morphological classification of differences between cont and seq updates
 
-update <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/UpdateType/100houses.csv",sep=";")
+update <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/UrbanMorphogenesis/Results/UpdateType/100houses.csv",sep=";")
 
 
 plotMorphDiff <- function(paramNames){
@@ -186,8 +187,11 @@ plotMorphDiff <- function(paramNames){
 	dens <- floor(99 * dens / max(dens)) + 1
 	
 	#compute corresponding color - ok since dens are integers
-	col <- colorRampPalette(c("black", "red"))(100)[dens]
+	col <- colorRampPalette(c("darkgrey", "red"))(100)[dens]
 	
+  par(mfcol=c(1,1))
+  par(mar=c(5,5,5,5))
+  
 	plot(x,y,
 	pch=19,
 	cex=0.5,

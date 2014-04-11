@@ -288,7 +288,7 @@ centers-number
 centers-number
 1
 20
-2
+3
 1
 1
 NIL
@@ -348,7 +348,7 @@ distance-to-center-coefficient
 distance-to-center-coefficient
 0
 1
-1
+0
 0.1
 1
 NIL
@@ -378,7 +378,7 @@ built-cells-per-tick
 built-cells-per-tick
 0
 100
-10
+15
 1
 1
 NIL
@@ -467,7 +467,7 @@ distance-to-activities-coefficient
 distance-to-activities-coefficient
 0
 1
-0
+1
 0.1
 1
 NIL
@@ -543,7 +543,7 @@ max-ticks
 max-ticks
 1
 500
-10
+5
 1
 1
 NIL
@@ -972,7 +972,7 @@ n-repets-eco
 n-repets-eco
 0
 10
-2
+0
 1
 1
 NIL
