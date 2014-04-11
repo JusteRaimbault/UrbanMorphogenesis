@@ -107,15 +107,15 @@ plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsVa
 	#wireframe(x = z,row.values = x, column.values = y ,angle=50,scales = list(arrows = FALSE,distance=c(2,2,2)),screen = list(z = 30, x = -60),drape = TRUE,xlab=xParamName,ylab=yParamName,zlab=reporterName)
 	
 	#persp function is more ergonomic
-	persp(x=x,y=y,z=z,r=10,theta=theta,phi=phi,col="lightblue",xlab=expression(alpha),ylab=ylab,zlab="",shade = 0.75, ticktype = "detailed",cex.lab=0.8,cex.axis=0.6,main=title)
+	persp(x=x,y=y,z=z,r=10,theta=theta,phi=phi,col="lightblue",xlab=xlab,ylab=ylab,zlab="",shade = 0.75, ticktype = "detailed",cex.lab=0.8,cex.axis=0.6,main=title)
 	
 }
 
 #let plot different reporters 
 par(mfcol=c(2,2))
 par(mar=c(1,2,1,2))
-plot3d("eval.density","distance.to.activities.coefficient","distance.to.roads.coefficient",c("distance.to.center.coefficient","density.coefficient"),c(0,0),315,25,"Density",xlab=expression(alpha[4]),ylab=expression(alpha[2]))
-plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0,0),140,25,"Moran Index",xlab="alpha_1",ylab="alpha_2")
+plot3d("eval.density","distance.to.activities.coefficient","distance.to.roads.coefficient",c("distance.to.center.coefficient","density.coefficient"),c(0,0),225,25,"Density",xlab="alpha_4",ylab="alpha_2")
+plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0,0),140,25,"Moran Index",xlab="alpha_3",ylab="alpha_1")
 plot3d("eval.speed","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),320,35,"Speed",xlab="alpha_4",ylab="alpha_1")
 plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),225,35,"Accessibility",xlab="alpha_4",ylab="alpha_1")
 
