@@ -42,9 +42,9 @@ histFit <-function(rows,col,xlim,ylim,prop,xlab,colors){
     d = removeOutliers(d,prop)
     #c = paste("light",colors[k])
     #if(c=="light red"){c="red3"}
-		h = hist(d,plot=TRUE,breaks=30,
+		h = hist(d,plot=TRUE,breaks=50,
              xlim=xlim,ylim=ylim,
-             add=(i!=rows[1]),col=colors[k],
+             add=(i!=rows[1]),col=colors[k],border=colors[k],
              xlab=xlab,main="")
 		K = max(h$counts)
 		curve(K*exp(- ((x - mean(d))^2)/(2*sd(d)^2)),add=TRUE,col=paste("darkred"),n=300,lwd=2)
@@ -54,15 +54,15 @@ histFit <-function(rows,col,xlim,ylim,prop,xlab,colors){
 }
 
 robManyConfs <- function(cols){ 
-  par(mfcol=c(2,2))
-  histFit(cols,5,c(0,1),c(0,110),0,"Density",c("red3","green","yellow"))
-  histFit(cols,6,c(0,1),c(0,40),0.4,"Moran",c("red3","green","yellow")) 
-  histFit(cols,7,c(1,2),c(0,20),0.2,"Speed",c("red3","green","yellow")) 
-  histFit(cols,8,c(0,1),c(0,90),0,"Accessibility",c("red3","green","yellow"))
+  par(mfcol=c(2,2),bg="white")
+  histFit(cols,5,c(0,1),c(0,50),1.5,"Density",c("red3","green","yellow"))
+  histFit(cols,6,c(-0.05,1),c(0,30),0.5,"Moran",c("red3","green","yellow")) 
+  histFit(cols,7,c(1,3),c(0,45),1.5,"Speed",c("red3","green","yellow")) 
+  histFit(cols,8,c(0,1),c(0,30),1.5,"Accessibility",c("red3","green","yellow"))
   
 }
 
-robManyConfs(c(2,4,8))
+robManyConfs(c(7,3,1))
 
 removeOutliers<-function(x,prop){
   if(prop>0){
@@ -84,7 +84,7 @@ removeOutliers<-function(x,prop){
 
 #Grid
 
-grid <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/UrbanMorphogenesis/Results/GridExploration/grid.csv",sep=";")
+grid <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/UrbanMorphogenesis/Results/GridExploration/gridGood.csv",sep=";")
 
 plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsValues,theta,phi,title,xlab,ylab){
 	
@@ -95,11 +95,13 @@ plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsVa
 	ycors = matrix(nrow=length(x),ncol=length(y))
 	for(i in 1:length(x)){
 		for(j in 1:length(y)){
+      if(i!=1&&j!=1){
 			z[i,j] = getReporterValue(c(xParamName,yParamName, otherParams),c(x[i],y[j], otherParamsValues),reporterName,grid)
 			xcors[i,j]=x[i];ycors[i,j]=y[j]
+      }
 		}
 	}
-
+  
 	#wireframe(z~xcors*ycors,data=data.frame(z,xcors,ycors),aspect = c(1,1),col="blue",shade=TRUE,light.source = c(10,0,10))
 	
 	#wireframe(x = z,row.values = x, column.values = y ,angle=50,scales = list(arrows = FALSE,distance=c(2,2,2)),screen = list(z = 30, x = -60),drape = TRUE,xlab=xParamName,ylab=yParamName,zlab=reporterName)
@@ -112,10 +114,10 @@ plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsVa
 #let plot different reporters 
 par(mfcol=c(2,2))
 par(mar=c(1,2,1,2))
-plot3d("eval.density","distance.to.activities.coefficient","distance.to.roads.coefficient",c("distance.to.center.coefficient","density.coefficient"),c(0.4,0.4),45,25,"Density",xlab=expression(alpha[4]),ylab=expression(alpha[2]))
-plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),140,25,"Moran Index",xlab="alpha_1",ylab="alpha_2")
-plot3d("eval.speed","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),145,25,"Speed",xlab="alpha_4",ylab="alpha_1")
-plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0.4,0.4),45,35,"Accessibility",xlab="alpha_4",ylab="alpha_1")
+plot3d("eval.density","distance.to.activities.coefficient","distance.to.roads.coefficient",c("distance.to.center.coefficient","density.coefficient"),c(0,0),315,25,"Density",xlab=expression(alpha[4]),ylab=expression(alpha[2]))
+plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0,0),140,25,"Moran Index",xlab="alpha_1",ylab="alpha_2")
+plot3d("eval.speed","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),320,35,"Speed",xlab="alpha_4",ylab="alpha_1")
+plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),225,35,"Accessibility",xlab="alpha_4",ylab="alpha_1")
 
 
 

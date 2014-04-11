@@ -363,7 +363,7 @@ distance-road-needed
 distance-road-needed
 0
 50
-6
+5
 0.1
 1
 NIL
@@ -482,7 +482,7 @@ activities-norma
 activities-norma
 -1
 20
-4
+3
 1
 1
 NIL
@@ -543,7 +543,7 @@ max-ticks
 max-ticks
 1
 500
-5
+20
 1
 1
 NIL
@@ -855,7 +855,7 @@ SWITCH
 606
 output-file?
 output-file?
-0
+1
 1
 -1000
 
