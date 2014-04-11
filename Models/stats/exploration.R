@@ -95,10 +95,10 @@ plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsVa
 	ycors = matrix(nrow=length(x),ncol=length(y))
 	for(i in 1:length(x)){
 		for(j in 1:length(y)){
-      if(i!=1&&j!=1){
+      #if(i!=1&&j!=1){
 			z[i,j] = getReporterValue(c(xParamName,yParamName, otherParams),c(x[i],y[j], otherParamsValues),reporterName,grid)
 			xcors[i,j]=x[i];ycors[i,j]=y[j]
-      }
+      #}
 		}
 	}
   
@@ -115,9 +115,9 @@ plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsVa
 par(mfcol=c(2,2))
 par(mar=c(1,2,1,2))
 plot3d("eval.density","distance.to.activities.coefficient","distance.to.roads.coefficient",c("distance.to.center.coefficient","density.coefficient"),c(0,0),225,25,"Density",xlab="alpha_4",ylab="alpha_2")
-plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0,0),140,25,"Moran Index",xlab="alpha_3",ylab="alpha_1")
+plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0,0),50,25,"Moran Index",xlab="alpha_3",ylab="alpha_1")
 plot3d("eval.speed","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),320,35,"Speed",xlab="alpha_4",ylab="alpha_1")
-plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),225,35,"Accessibility",xlab="alpha_4",ylab="alpha_1")
+plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),45,35,"Accessibility",xlab="alpha_4",ylab="alpha_1")
 
 
 
@@ -194,10 +194,10 @@ plotMorphDiff <- function(paramNames){
   par(mfcol=c(1,1))
   par(mar=c(5,5,5,5))
   
-	plot(x,y,
+	plot(x[order(col)],y[order(col)],
 	pch=19,
 	cex=0.5,
-	col=col,
+	col=sort(col),
 	xlab="Density",ylab="Moran",main="Morphologic imprint of differences")
 	return(data.frame(x,y))
 }
