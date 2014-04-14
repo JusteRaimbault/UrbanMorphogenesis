@@ -101,6 +101,7 @@ plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsVa
       #}
 		}
 	}
+  z[1,1]=min(z[z>min(z)])
   
 	#wireframe(z~xcors*ycors,data=data.frame(z,xcors,ycors),aspect = c(1,1),col="blue",shade=TRUE,light.source = c(10,0,10))
 	
@@ -113,11 +114,11 @@ plot3d <- function(reporterName,xParamName,yParamName, otherParams,otherParamsVa
 
 #let plot different reporters 
 par(mfcol=c(2,2))
-par(mar=c(1,2,1,2))
+par(mar=c(1,2.5,1,2.5))
 plot3d("eval.density","distance.to.activities.coefficient","distance.to.roads.coefficient",c("distance.to.center.coefficient","density.coefficient"),c(0,0),225,25,"Density",xlab="alpha_4",ylab="alpha_2")
 plot3d("spatial.autocorrelation.index","distance.to.center.coefficient","density.coefficient",c("distance.to.activities.coefficient","distance.to.roads.coefficient"),c(0,0),50,25,"Moran Index",xlab="alpha_3",ylab="alpha_1")
-plot3d("eval.speed","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),320,35,"Speed",xlab="alpha_4",ylab="alpha_1")
-plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),45,35,"Accessibility",xlab="alpha_4",ylab="alpha_1")
+plot3d("eval.speed","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),50,35,"Speed",xlab="alpha_4",ylab="alpha_1")
+plot3d("eval.activities","distance.to.activities.coefficient","density.coefficient",c("distance.to.center.coefficient","distance.to.roads.coefficient"),c(0,0),315,35,"Accessibility",xlab="alpha_4",ylab="alpha_1")
 
 
 

@@ -2,7 +2,7 @@ library(ggplot2)
 
 #plot of economic time series for convergence assessment
 
-#eco <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/project/Results/Economic/200repets10eco.csv",sep=";")
+eco <- read.csv("/Users/Juste/Documents/Cours/ComplexSystemsMadeSimple/UrbanMorphogenesis/Results/Economic/200repets10eco.csv",sep=";")
 
 #data are in column
 
