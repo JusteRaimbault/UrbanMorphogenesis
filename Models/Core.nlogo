@@ -21,35 +21,35 @@ extensions[nw table gis profiler]
 
 
 __includes[
-  
+
   ;;main functions
   "main.nls"
-  
+
   ;;setup functions for CA-Network
   "setupCA.nls"
-  
+
   ;;patches procedures
   "patches.nls"
-  
+
   ;;Evolutive ABM (economic evaluation)
   "economicABM.nls"
-  
+
   ;;Basic evaluation functions
   "evaluation.nls"
-  
+
   ;;application and exploration of the model
   "application.nls"
   "exploration.nls"
-  
+
   ;;display functions
   "display.nls"
-  
-  
+
+
   ;;Utilities
   "utils/ListUtilities.nls"
   "utils/EuclidianDistancesUtilities.nls"
   "utils/TypesUtilities.nls"
-  "utils/LinkUtilities.nls"  
+  "utils/LinkUtilities.nls"
   "utils/SortingUtilities.nls"
   "utils/FileUtilities.nls"
   "utils/StringUtilities.nls"
@@ -57,53 +57,53 @@ __includes[
 
 
 globals[
-  
+
   ;;;;;;;;;;;;;;
   ;; Rq : all globals including slider vars are listed here for comprehension purposes
   ;; vars in sliders are commented of course
   ;;;;;;;;;;;;;;
-  
-  
+
+
   ;;;;;;;;;;;;;
   ;; Core parameters
   ;;;;;;;;;;;;;
-  
+
   ;distance-to-activities-coefficient
   ;density-coefficient
   ;distance-to-roads-coeficient
-  
-  
+
+
   ;;;;;;;;;;;;;;
   ;; GIS Configuration
   ;;;;;;;;;;;;;;
   centers-gis-layer
   paths-gis-layer
-  
-  
+
+
   ;;;;;;;;;;;;;
   ;;globals for dynamical ABM
   ;;;;;;;;;;;;;
-  
+
   ;rent-update-radius
   mean-economic-value
   sigma-wealth
   ;move-threshold
   new-incomers-number
-  
+
   ;;updated lists of available places
   ;;(efficiency purposes)
   available-houses
-  
+
   ;;max number of ticks for convergence of economic ABM
   ;;Has to be fixed by experience !
   max-ticks-economic
-  
+
   ;;;;;;;;;;;;;
   ;;globals for other evaluation functions
   ;;;;;;;;;;;;;
   moran-grid-size
   moran-populations
-  
+
   ;;bounds as variables for efficiency purposes
   density-max
   density-min
@@ -114,39 +114,39 @@ globals[
   distance-to-activities-max
   distance-to-activities-min
   dmax
-  
-  
+
+
   ;;;;;;;;;;;;;
   ;; Globals for exploration of configurations
   ;;;;;;;;;;;;;
-  
+
   ;;current points in the pareto plot
   ;;initialised and used iff config-comparison? == true
   pareto-points
-  
-  
-  
+
+
+
   ;;;;;;;;;;;;;;
   ;; Runtime vars
   ;;;;;;;;;;;;;
-  
+
   ;;time profile spent in go at each tick
   current-time-spent
-  
+
   ;;tracker
   tracker-time
-  
+
   ;;output-file
   output-file-name
   output-reporter-names
-  
+
   ;;monitor economic times series?
   ;;(used to assess convergence of indicators)
   ;;gives too huge files ?
   ;monitor-economic?
   ;;since monitoring is done inside running of the model, we need a global var for output list
   current-output-conf-economic
-  
+
 ]
 
 
@@ -170,14 +170,14 @@ undirected-link-breed [paths path]
 
 
 patches-own[
-  
+
   ;;is the patch constructed ?
   constructed?
-  
+
   ;;can it be contructed? (no road or no center)
   ;;-> when a new road is constructed, destroy old ones and set not constructible
   constructible?
-  
+
   ;;objective value of the patch and associated internediate variables
   value
   pdensity
@@ -185,7 +185,7 @@ patches-own[
   pdistance-to-centre
   pspeed-from-patch
   pdistance-to-activities
-  
+
   ;;dynamic economic value (will be seen as a "rent")
   ;;for ABM economic evaluation
   rent
@@ -196,16 +196,16 @@ patches-own[
 
 
 centres-own[
-  
+
   ;;integer representing the activity of the center
-  activity 
-  
+  activity
+
   ;;The numerotation of centers is used during optimisation configuration
   ;;to make correspond place in conf to the good center
   ;;only centers with a!=0 are numeroted
   ;;because we optimise with a fixed activity
   number
-  
+
   net-d-to-centre
   net-d-to-activities
 ]
@@ -288,7 +288,7 @@ centers-number
 centers-number
 1
 20
-3
+2
 1
 1
 NIL
@@ -1439,7 +1439,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0.2
+NetLogo 5.3.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
@@ -1447,9 +1447,9 @@ NetLogo 5.0.2
 @#$#@#$#@
 default
 0.0
--0.2 0 1.0 0.0
+-0.2 0 0.0 1.0
 0.0 1 1.0 0.0
-0.2 0 1.0 0.0
+0.2 0 0.0 1.0
 link direction
 true
 0

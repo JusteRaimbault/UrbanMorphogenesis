@@ -147,18 +147,18 @@ to setup-network
     ask centres [create-paths-with ((other centres) with-min [distance myself]) with [not path-neighbor? myself][new-path]]
     let clusters []
     while [length clusters = 0 or length clusters > 2] [
-      nw:set-snapshot turtles links
+      nw:set-context turtles links
       set clusters nw:weak-component-clusters
       ;take one cluster, connects with the closest
       let c1 first sort-by [([pxcor] of first ?1 < [pxcor] of first ?2) or (([pxcor] of first ?1 = [pxcor] of first ?2) and ([pycor] of first ?1 < [pycor] of first ?2))] (map [sort-by [([pxcor] of ?1 < [pxcor] of ?2) or (([pxcor] of ?1 = [pxcor] of ?2) and ([pycor] of ?1 < [pycor] of ?2))] ?] clusters)
       let dmin dmax let tmin1 one-of turtles let tmin2 one-of turtles
       foreach clusters[
         let aux remove 0 c1
-        foreach ? [set aux remove ? aux]
+        ask ? [set aux remove self aux]
         if  not empty? aux [
           let d dmax let t1 one-of c1 let t2 one-of ?
-          foreach ? [
-            let t ?
+          ask ? [
+            let t self
             foreach c1 [
               ask ? [if distance t < d [set d distance t set t1 self set t2 t]] 
             ]

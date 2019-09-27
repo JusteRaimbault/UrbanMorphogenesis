@@ -110,7 +110,7 @@ end
 
 to update-network-distances
   ;snapshot of the network
-  nw:set-snapshot turtles paths
+  nw:set-context turtles paths
   ask paths [set path-length link-length]
   ask intersections [
      set net-d-to-centre intvalue nw:weighted-distance-to first sort-on [intvalue nw:weighted-distance-to myself "path-length"] centres "path-length"
