@@ -1,7 +1,8 @@
 \documentclass[letterpaper]{article}
 
 \usepackage{natbib,alifeconf}  %% The order is important
-
+\usepackage{url,hyperref,cleveref}
+\usepackage{booktabs}
 
 % *****************
 %  Requirements:
@@ -50,12 +51,14 @@
 
 
 \title{A multiscale model of urban morphogenesis}
-\author{Juste Raimbault$^{1,2,3}$\\
+\author{%Juste Raimbault$^{1,2,3}$\\
 \mbox{}\\
-$^1$Center for Advanced Spatial Analysis, University College London, London, UK\\
-$^2$UPS CNRS 3611 ISC-PIF, Paris, France\\
-$^3$UMR CNRS 8504 G{\'e}ographie-cit{\'e}s, Paris, France\\
-juste.raimbault@polytechnique.edu} % email of corresponding author
+%$^1$Center for Advanced Spatial Analysis, University College London, London, UK\\
+%$^2$UPS CNRS 3611 ISC-PIF, Paris, France\\
+%$^3$UMR CNRS 8504 G{\'e}ographie-cit{\'e}s, Paris, France\\
+%Affiliations\\
+}
+%juste.raimbault@polytechnique.edu} % email of corresponding author
 
 % For several authors from the same institution use the same number to
 % refer to one address.
@@ -76,6 +79,16 @@ juste.raimbault@polytechnique.edu} % email of corresponding author
 % Abstract length should not exceed 250 words
 The dynamics and processes of urban morphogenesis are a central issue regarding a long-term sustainability of urban systems. They however imply stakeholders and parameters at multiple temporal and spatial scales simultaneously, leading to intricate interactions between dimensions and scales. We introduce in this paper from a theoretical viewpoint a simple agent-based model of urban morphogenesis at the scale of an urban area, with the feature of integrating the microscopic and the mesoscopic scales. At the local level, developer agents drive urban development conditioned by local properties but also an infrastructure network at a smaller scale. The network evolves more slowly following global properties. Indicators of sustainability including modal shares and urban density suggest an application of the model to multi-objective optimisation. We finally discuss possible implementation, extensions and applications of the model.
 \end{abstract}
+
+% Choose one of: Full Paper, Summaries, or Late Breaking Abstracts 
+Submission type: \textbf{Full Paper}\\
+
+% If sharing code / data, anonymize your repository and paste the link here.
+% Example of anonymizing sevice for github: https://anonymous.4open.science/
+% delete this line if not needed
+Data/Code available at: \url{}
+
+
 
 \section{Introduction}
 
@@ -234,252 +247,9 @@ We have given a theoretical and formal description of a multiscale model of urba
 
 
 \footnotesize
-%\bibliographystyle{apalike}
-%\bibliography{biblio} % replace by the name of your .bib file
+\bibliographystyle{apalike}
+\bibliography{biblio} % replace by the name of your .bib file
 
-\begin{thebibliography}{}
-
-\bibitem[Arsanjani et~al., 2015]{arsanjani2015quality}
-Arsanjani, J.~J., Mooney, P., Zipf, A., and Schauss, A. (2015).
-\newblock Quality assessment of the contributed land use information from
-  openstreetmap versus authoritative datasets.
-\newblock In {\em OpenStreetMap in GIScience}, pages 37--58. Springer.
-
-\bibitem[Batty, 2005]{batty2005agents}
-Batty, M. (2005).
-\newblock Agents, cells, and cities: new representational models for simulating
-  multiscale urban dynamics.
-\newblock {\em Environment and Planning A}, 37(8):1373--1394.
-
-\bibitem[Batty, 2013]{batty2013new}
-Batty, M. (2013).
-\newblock {\em The new science of cities}.
-\newblock MIT press.
-
-\bibitem[Batty and Marshall, 2009]{batty2009centenary}
-Batty, M. and Marshall, S. (2009).
-\newblock Centenary paper: The evolution of cities: Geddes, abercrombie and the
-  new physicalism.
-\newblock {\em Town Planning Review}, 80(6):551--575.
-
-\bibitem[Batty and Milton, 2021]{batty2021new}
-Batty, M. and Milton, R. (2021).
-\newblock A new framework for very large-scale urban modelling.
-\newblock {\em Urban Studies}, page 0042098020982252.
-
-\bibitem[Brasebin et~al., 2017]{brasebin2017apports}
-Brasebin, M., Chapron, P., Ch{\'e}rel, G., Leclaire, M., Lokhat, I., Perret,
-  J., and Reuillon, R. (2017).
-\newblock Apports des m{\'e}thodes d'exploration et de distribution
-  appliqu{\'e}es {\`a} la simulation des droits {\`a} b{\^a}tir.
-\newblock In {\em Spatial Analysis and GEOmatics 2017}.
-
-\bibitem[Chen and Jiang, 2010]{chen2010modeling}
-Chen, Y. and Jiang, S. (2010).
-\newblock Modeling fractal structure of systems of cities using spatial
-  correlation function.
-\newblock {\em International Journal of Artificial Life Research (IJALR)},
-  1(1):12--34.
-
-\bibitem[Cheng and Masser, 2003]{cheng2003modelling}
-Cheng, J. and Masser, I. (2003).
-\newblock Modelling urban growth patterns: a multiscale perspective.
-\newblock {\em Environment and Planning A}, 35(4):679--704.
-
-\bibitem[Ch{\'e}rel et~al., 2015]{cherel2015beyond}
-Ch{\'e}rel, G., Cottineau, C., and Reuillon, R. (2015).
-\newblock Beyond corroboration: Strengthening model validation by looking for
-  unexpected patterns.
-\newblock {\em PloS one}, 10(9):e0138212.
-
-\bibitem[Clarke et~al., 2007]{clarke2007decade}
-Clarke, K.~C., Gazulis, N., Dietzel, C., and Goldstein, N.~C. (2007).
-\newblock A decade of sleuthing: Lessons learned from applications of a
-  cellular automaton land use change model.
-\newblock {\em Classics in IJGIS: twenty years of the international journal of
-  geographical information science and systems}, pages 413--427.
-
-\bibitem[Gershenson, 2013]{gershenson2013living}
-Gershenson, C. (2013).
-\newblock Living in living cities.
-\newblock {\em Artificial life}, 19(3\_4):401--420.
-
-\bibitem[Goldstein, 2000]{goldstein2000cities}
-Goldstein, N.~C. (2000).
-\newblock Do cities learn from getting burned.
-\newblock {\em Artificial Life}, 7.
-
-\bibitem[Gonz{\'a}lez-Gonz{\'a}lez and Nogu{\'e}s, 2019]{gonzalez2019long}
-Gonz{\'a}lez-Gonz{\'a}lez, E. and Nogu{\'e}s, S. (2019).
-\newblock Long-term differential effects of transport infrastructure investment
-  in rural areas.
-\newblock {\em Transportation research part A: policy and practice},
-  125:234--247.
-
-\bibitem[Higgs et~al., 2012]{higgs2012investigating}
-Higgs, G., Fry, R., and Langford, M. (2012).
-\newblock Investigating the implications of using alternative gis-based
-  techniques to measure accessibility to green space.
-\newblock {\em Environment and Planning B: Planning and Design},
-  39(2):326--343.
-
-\bibitem[Lagesse et~al., 2015]{lagesse2015spatial}
-Lagesse, C., Bordin, P., and Douady, S. (2015).
-\newblock A spatial multi-scale object to analyze road networks.
-\newblock {\em Network Science}, 3(1):156--181.
-
-\bibitem[Le~N{\'e}chet and Raimbault, 2015]{le2015modeling}
-Le~N{\'e}chet, F. and Raimbault, J. (2015).
-\newblock Modeling the emergence of metropolitan transport authority in a
-  polycentric urban region.
-\newblock In {\em European Colloqueum on Theoretical and Quantitative
-  Geography}.
-
-\bibitem[Levinson and Wu, 2020]{levinson2020towards}
-Levinson, D. and Wu, H. (2020).
-\newblock Towards a general theory of access.
-\newblock {\em Journal of Transport and Land Use}, 13(1):129--158.
-
-\bibitem[Lim et~al., 2017]{lim2017multi}
-Lim, T.~K., Ignatius, M., Miguel, M., Wong, N.~H., and Juang, H.-M.~H. (2017).
-\newblock Multi-scale urban system modeling for sustainable planning and
-  design.
-\newblock {\em Energy and Buildings}, 157:78--91.
-
-\bibitem[Murcio et~al., 2015]{murcio2015urban}
-Murcio, R., Morphet, R., Gershenson, C., and Batty, M. (2015).
-\newblock Urban transfer entropy across scales.
-\newblock {\em PLoS One}, 10(7):e0133780.
-
-\bibitem[Pumain, 2018]{pumain2018evolutionary}
-Pumain, D. (2018).
-\newblock An evolutionary theory of urban systems.
-\newblock In {\em International and transnational perspectives on urban
-  systems}, pages 3--18. Springer.
-
-\bibitem[Pumain, 2020]{pumain2020theories}
-Pumain, D. (2020).
-\newblock Introduction.
-\newblock In Pumain, D., editor, {\em Theories and Models of Urbanization},
-  pages 1--9. Springer.
-
-\bibitem[Raimbault, 2018a]{raimbault2018calibration}
-Raimbault, J. (2018a).
-\newblock Calibration of a density-based model of urban morphogenesis.
-\newblock {\em PloS one}, 13(9):e0203516.
-
-\bibitem[Raimbault, 2018b]{raimbault2018caracterisation}
-Raimbault, J. (2018b).
-\newblock {\em Caract{\'e}risation et mod{\'e}lisation de la co-{\'e}volution
-  des r{\'e}seaux de transport et des territoires}.
-\newblock PhD thesis, Universit{\'e} Paris 7 Denis Diderot.
-
-\bibitem[Raimbault, 2018c]{raimbault2018multi}
-Raimbault, J. (2018c).
-\newblock Multi-modeling the morphogenesis of transportation networks.
-\newblock In {\em Artificial Life Conference Proceedings}, pages 382--383. MIT
-  Press.
-
-\bibitem[Raimbault, 2020a]{raimbault2020cities}
-Raimbault, J. (2020a).
-\newblock Cities as they could be: Artificial life and urban systems.
-\newblock {\em arXiv preprint arXiv:2002.12926}.
-
-\bibitem[Raimbault, 2020b]{raimbault2020model}
-Raimbault, J. (2020b).
-\newblock A model of urban evolution based on innovation diffusion.
-\newblock In {\em Artificial Life Conference Proceedings}, pages 500--508. MIT
-  Press.
-
-\bibitem[Raimbault et~al., 2014]{raimbault2014hybrid}
-Raimbault, J., Banos, A., and Doursat, R. (2014).
-\newblock A hybrid network/grid model of urban morphogenesis and optimization.
-\newblock In {\em 4th International Conference on Complex Systems and
-  Applications}, pages 51--60.
-
-\bibitem[Raimbault et~al., 2019]{raimbault2019space}
-Raimbault, J., Cottineau, C., Le~Texier, M., Le~Nechet, F., and Reuillon, R.
-  (2019).
-\newblock Space matters: Extending sensitivity analysis to initial spatial
-  conditions in geosimulation models.
-\newblock {\em Journal of Artificial Societies and Social Simulation}, 22(4).
-
-\bibitem[Raimbault and Perret, 2019]{raimbault2019generating}
-Raimbault, J. and Perret, J. (2019).
-\newblock Generating urban morphologies at large scales.
-\newblock In {\em Artificial Life Conference Proceedings}, pages 179--186. MIT
-  Press.
-
-\bibitem[Reuillon et~al., 2013]{reuillon2013openmole}
-Reuillon, R., Leclaire, M., and Rey-Coyrehourcq, S. (2013).
-\newblock Openmole, a workflow engine specifically tailored for the distributed
-  exploration of simulation models.
-\newblock {\em Future Generation Computer Systems}, 29(8):1981--1990.
-
-\bibitem[Rozenblat and Pumain, 2018]{rozenblat2018conclusion}
-Rozenblat, C. and Pumain, D. (2018).
-\newblock Conclusion: Toward a methodology for multi-scalar urban system
-  policies.
-\newblock {\em International and Transnational Perspectives on Urban Systems},
-  page 385.
-
-\bibitem[Seth, 2010]{seth2010measuring}
-Seth, A.~K. (2010).
-\newblock Measuring autonomy and emergence via granger causality.
-\newblock {\em Artificial life}, 16(2):179--196.
-
-\bibitem[Silver et~al., 2019]{silver2019towards}
-Silver, D., Fox, M.~S., and Adler, P. (2019).
-\newblock Towards a model of urban evolution.
-
-\bibitem[Torrens and Nara, 2012]{torrens2012polyspatial}
-Torrens, P.~M. and Nara, A. (2012).
-\newblock Polyspatial agents for multi-scale urban simulation and regional
-  policy analysis.
-\newblock {\em Regional Science Policy \& Practice}, 4(4):419--445.
-
-\bibitem[Vigui{\'e} and Hallegatte, 2012]{viguie2012trade}
-Vigui{\'e}, V. and Hallegatte, S. (2012).
-\newblock Trade-offs and synergies in urban climate policies.
-\newblock {\em Nature Climate Change}, 2(5):334--337.
-
-\bibitem[Wegener, 2004]{wegener2004overview}
-Wegener, M. (2004).
-\newblock Overview of land use transport models.
-\newblock In {\em Handbook of transport geography and spatial systems}. Emerald
-  Group Publishing Limited.
-
-\bibitem[Wong et~al., 2021]{wong2021integrated}
-Wong, N.~H., He, Y., Nguyen, N.~S., Raghavan, S.~V., Martin, M., Hii, D. J.~C.,
-  Yu, Z., and Deng, J. (2021).
-\newblock An integrated multiscale urban microclimate model for the urban
-  thermal environment.
-\newblock {\em Urban Climate}, 35:100730.
-
-\bibitem[Wu and Silva, 2011]{wu2011urban}
-Wu, N. and Silva, E.~A. (2011).
-\newblock Urban dna: exploring the biological metaphor of urban evolution with
-  dg-abc model.
-\newblock In {\em Proceedings The 14th AGILE International Conference on
-  Geographic Information Science. Utrecht University}.
-
-\bibitem[Yoshioka et~al., 2017]{yoshioka2017macroscopic}
-Yoshioka, N., Shimada, T., and Ito, N. (2017).
-\newblock Macroscopic fundamental diagram in simple model of urban traffic.
-\newblock {\em Artificial Life and Robotics}, 22(2):217--221.
-
-\bibitem[Youn, 2018]{youn2018scaling}
-Youn, H. (2018).
-\newblock Scaling in physics, biology, cities and beyond.
-\newblock In {\em Artificial Life Conference Proceedings}, pages 6--6. MIT
-  Press.
-
-\bibitem[Zheng et~al., 2017]{zheng2017decision}
-Zheng, W., Shen, G.~Q., Wang, H., Hong, J., and Li, Z. (2017).
-\newblock Decision support for sustainable urban renewal: A multi-scale model.
-\newblock {\em Land Use Policy}, 69:361--371.
-
-\end{thebibliography}
 
 
 
